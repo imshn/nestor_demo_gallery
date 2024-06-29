@@ -1,0 +1,34 @@
+[
+  {
+    "assetId": "car",
+    "targetPlatform": "android"
+  },
+  {
+    "assetId": "air001",
+    "targetPlatform": "web"
+  },
+  {
+    "assetId": "flower001",
+    "targetPlatform": "generic"
+  },
+  {
+    "assetId": "house001",
+    "targetPlatform": "ios"
+  },
+  {
+    "assetId": "mobile001",
+    "targetPlatform": "android"
+  },
+  {
+    "assetId": "earth001",
+    "targetPlatform": "web"
+  },
+  {
+    "assetId": "animal001",
+    "targetPlatform": "android"
+  },
+  {
+    "assetId": "ship001",
+    "targetPlatform": "web"
+  }
+]
