@@ -28,7 +28,7 @@ export default function App() {
       <h2 style={{ margin: "30px 20px" }}>
         Nestor Assets Demo
         <br />
-        <p class="h6">[{ENV_ID}]</p>
+        <p className="h6">[{ENV_ID}]</p>
       </h2>
       <div className="container text-center">
         <h1 style={{ margin: "30px 20px" }}>Asset Gallery</h1>
