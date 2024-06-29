@@ -1,69 +1,39 @@
 /* eslint-disable no-undef */
 import { useEffect } from "react";
-
+import Assets from "./Assets.json";
 import "./App.css";
 
 const DOMAIN_ID = process.env.REACT_APP_DOMAIN_ID;
 const ENV_ID = process.env.REACT_APP_ENV_ID;
-console.log(import.meta.env);
-const imagesUrls = [
-  "https://adn.nestortech.io/api/va/" +
-    DOMAIN_ID +
-    "/car/" +
-    ENV_ID +
-    "/android",
-  "https://adn.nestortech.io/api/va/" +
-    DOMAIN_ID +
-    "/air001/" +
-    ENV_ID +
-    "/web",
-  "https://adn.nestortech.io/api/va/" +
-    DOMAIN_ID +
-    "/flower001/" +
-    ENV_ID +
-    "/generic",
-  "https://adn.nestortech.io/api/va/" +
-    DOMAIN_ID +
-    "/house001/" +
-    ENV_ID +
-    "/ios",
-  "https://adn.nestortech.io/api/va/" +
-    DOMAIN_ID +
-    "/mobile001/" +
-    ENV_ID +
-    "/android",
-  "https://adn.nestortech.io/api/va/" +
-    DOMAIN_ID +
-    "/earth001/" +
-    ENV_ID +
-    "/web",
-  "https://adn.nestortech.io/api/va/" +
-    DOMAIN_ID +
-    "/animal001/" +
-    ENV_ID +
-    "/android",
-  "https://adn.nestortech.io/api/va/" +
-    DOMAIN_ID +
-    "/ship001/" +
-    ENV_ID +
-    "/web"
-];
+const ADN_BASE_URL = process.env.REACT_APP_ADN_BASE_URL;
+
 export default function App() {
   const renderImage = () => {
-    return imagesUrls?.map((url, index) => (
+    return Assets.map((asset, index) => (
       <div key={index}>
-        <img src={url} />
+        <img
+          src={`${ADN_BASE_URL}${DOMAIN_ID}/${asset.assetId}/${ENV_ID}/${asset.targetPlatform}`}
+          alt=""
+        />
+        <p className="h6">{asset.assetId}</p>
       </div>
     ));
   };
 
   useEffect(() => {
     renderImage();
-  }, [imagesUrls]);
+  }, []);
   return (
-    <div className="container">
-      <h1 style={{ textAlign: "center", margin:"20px 0px" }}>Nestor Assets Demo - {ENV_ID}</h1>
-      <div className="gallery">{renderImage()}</div>
-    </div>
+    <>
+      <h2 style={{ margin: "30px 20px" }}>
+        Nestor Assets Demo
+        <br />
+        <p className="h6">[{ENV_ID}]</p>
+      </h2>
+      <div className="container text-center">
+        <h1 style={{ margin: "30px 20px" }}>Asset Gallery</h1>
+        <div className="gallery">{renderImage()}</div>
+      </div>
+    </>
   );
 }
