@@ -61,9 +61,16 @@ export default function App() {
     renderImage();
   }, [imagesUrls]);
   return (
-    <div className="container">
-      <h1 style={{ textAlign: "center", margin:"20px 0px" }}>Nestor Assets Demo - {ENV_ID}</h1>
-      <div className="gallery">{renderImage()}</div>
-    </div>
+    <>
+      <h2 style={{ margin: "30px 20px" }}>
+        Nestor Assets Demo
+        <br />
+        <p class="h6">[{ENV_ID}]</p>
+      </h2>
+      <div className="container text-center">
+        <h1 style={{ margin: "30px 20px" }}>Asset Gallery</h1>
+        <div className="gallery">{renderImage()}</div>
+      </div>
+    </>
   );
 }
