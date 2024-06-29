@@ -10,7 +10,7 @@ const ADN_BASE_URL = process.env.REACT_APP_ADN_BASE_URL;
 export default function App() {
   const renderImage = () => {
     return Assets.map((asset, index) => (
-      <div key={index}>
+      <div className="w-sm-100" key={index}>
         <img
           src={`${ADN_BASE_URL}${DOMAIN_ID}/${asset.assetId}/${ENV_ID}/${asset.targetPlatform}`}
           alt=""
@@ -30,7 +30,7 @@ export default function App() {
         <br />
         <p className="h6">[{ENV_ID}]</p>
       </h2>
-      <div className="container text-center">
+      <div className="container-fluid text-center">
         <h1 style={{ margin: "30px 20px" }}>Asset Gallery</h1>
         <div className="gallery">{renderImage()}</div>
       </div>
