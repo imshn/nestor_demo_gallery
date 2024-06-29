@@ -45,6 +45,8 @@
   grid-template-columns: repeat(4, 1fr);
   place-items: center; */
   display: flex;
+  align-items: center;
+  justify-content: center;
   flex-wrap: wrap;
   gap: 20px;
   width: 100%;
