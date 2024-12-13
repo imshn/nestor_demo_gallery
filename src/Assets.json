@@ -1,34 +1,38 @@
 [
   {
-    "assetId": "car",
+    "assetId": "NEWDEMO1",
     "targetPlatform": "android"
   },
   {
-    "assetId": "air001",
-    "targetPlatform": "web"
-  },
-  {
-    "assetId": "flower001",
-    "targetPlatform": "generic"
-  },
-  {
-    "assetId": "house001",
+    "assetId": "NEWDEMO1",
     "targetPlatform": "ios"
   },
   {
-    "assetId": "mobile001",
-    "targetPlatform": "android"
+    "assetId": "NEWDEMO1",
+    "targetPlatform": "generic"
   },
   {
-    "assetId": "earth001",
+    "assetId": "NEWDEMO1",
     "targetPlatform": "web"
   },
   {
-    "assetId": "animal001",
-    "targetPlatform": "android"
+    "assetId": "NEWDEMOVIDEO123",
+    "targetPlatform": "android",
+    "isVideo":true
   },
   {
-    "assetId": "ship001",
-    "targetPlatform": "web"
+    "assetId": "NEWDEMOVIDEO123",
+    "targetPlatform": "web",
+    "isVideo":true
+  },
+  {
+    "assetId": "NEWDEMOVIDEO123",
+    "targetPlatform": "ios",
+    "isVideo":true
+  },
+  {
+    "assetId": "NEWDEMOVIDEO123",
+    "targetPlatform": "generic",
+    "isVideo":true
   }
 ]
