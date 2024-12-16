@@ -73,7 +73,7 @@ export default function Gallery() {
 
     return filteredAssets.map((asset, index) => (
       <div className={styles.assetContainer} key={index}>
-        {renderAsset(asset)}
+        {renderAssetV2(asset)}
         <p className={styles.assetId}>{asset.assetId}</p>
         <div className={styles.description}>
           Target Platform: {asset.targetPlatform}
