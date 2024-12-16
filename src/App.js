@@ -1,23 +1,24 @@
-import React, { useState } from 'react'
-import styles from './App.module.css'
-import Assets from './Assets.json'
+import React, { useState } from "react";
+import styles from "./App.module.css";
+import Assets from "./Assets.json";
 
-const ADN_BASE_URL_V1 = process.env.REACT_APP_ADN_BASE_URL_V1 || '';
-const ADN_BASE_URL_v2 = process.env.REACT_APP_ADN_BASE_URL_V2 || '';
-const DOMAIN_ID = process.env.REACT_APP_DOMAIN_ID || '';
-const ENV_ID = process.env.REACT_APP_ENV_ID || '';
+const ADN_BASE_URL_V1 = process.env.REACT_APP_ADN_BASE_URL_V1 || "";
+const ADN_BASE_URL_v2 = process.env.REACT_APP_ADN_BASE_URL_V2 || "";
+const DOMAIN_ID = process.env.REACT_APP_DOMAIN_ID || "";
+const ENV_ID = process.env.REACT_APP_ENV_ID || "";
 
 export default function Gallery() {
-  const [searchQuery, setSearchQuery] = useState('')
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredAssets = Assets.filter(asset => 
-    asset.assetId.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    asset.targetPlatform.toLowerCase().includes(searchQuery.toLowerCase())
-  )
+  const filteredAssets = Assets.filter(
+    (asset) =>
+      asset.assetId.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.targetPlatform.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const renderAsset = (asset) => {
     const assetUrl = `${ADN_BASE_URL_V1}${DOMAIN_ID}/${asset.assetId}/${ENV_ID}/${asset.targetPlatform}`;
-    
+
     if (asset.isVideo) {
       return (
         <video className={styles.video} controls>
@@ -27,11 +28,7 @@ export default function Gallery() {
       );
     } else {
       return (
-        <img
-          src={assetUrl}
-          alt={asset.assetId}
-          className={styles.image}
-        />
+        <img src={assetUrl} alt={asset.assetId} className={styles.image} />
       );
     }
   };
@@ -54,7 +51,7 @@ export default function Gallery() {
 
   const renderAssetV2 = (asset) => {
     const assetUrl = `${ADN_BASE_URL_v2}${DOMAIN_ID}/${asset.assetId}/${ENV_ID}/${asset.targetPlatform}`;
-    
+
     if (asset.isVideo) {
       return (
         <video className={styles.video} controls>
@@ -64,11 +61,7 @@ export default function Gallery() {
       );
     } else {
       return (
-        <img
-          src={assetUrl}
-          alt={asset.assetId}
-          className={styles.image}
-        />
+        <img src={assetUrl} alt={asset.assetId} className={styles.image} />
       );
     }
   };
@@ -92,7 +85,7 @@ export default function Gallery() {
     <div className={styles.container}>
       <h1 className={styles.title}>Nestor Asset Demo</h1>
       <p className={styles.dynamicText}>[{ENV_ID}]</p>
-      
+
       <div className={styles.searchContainer}>
         <input
           type="search"
@@ -102,16 +95,17 @@ export default function Gallery() {
           onChange={(e) => setSearchQuery(e.target.value)}
         />
       </div>
-      <p className={styles.dynamicText}>[Adn V1]</p>
-      <div className={styles.gallery}>
-        {renderGallery()}
-      </div>
-      <hr/>
-      <p className={styles.dynamicText}>[Adn V2]</p>
-      <div className={styles.gallery}>
-        {renderGalleryV2()}
+      <div style={{ display: "flex", gap:0 }}>
+        <div style={{borderRight:"1px solid", paddingRight:10}}>
+          <p className={styles.dynamicText}>[Adn V1]</p>
+          <div className={styles.gallery}>{renderGallery()}</div>
+          <hr />
+        </div>
+        <div style={{ paddingLeft:10}}>
+          <p className={styles.dynamicText}>[Adn V2]</p>
+          <div className={styles.gallery}>{renderGalleryV2()}</div>
+        </div>
       </div>
     </div>
-  )
+  );
 }
-
