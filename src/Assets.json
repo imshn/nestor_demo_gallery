@@ -1,38 +1,38 @@
 [
-  {
-    "assetId": "NEWDEMO1",
-    "targetPlatform": "android"
-  },
-  {
-    "assetId": "NEWDEMO1",
-    "targetPlatform": "ios"
-  },
-  {
-    "assetId": "NEWDEMO1",
-    "targetPlatform": "generic"
-  },
-  {
-    "assetId": "NEWDEMO1",
-    "targetPlatform": "web"
-  },
-  {
-    "assetId": "NEWDEMOVIDEO123",
-    "targetPlatform": "android",
-    "isVideo":true
-  },
-  {
-    "assetId": "NEWDEMOVIDEO123",
-    "targetPlatform": "web",
-    "isVideo":true
-  },
-  {
-    "assetId": "NEWDEMOVIDEO123",
-    "targetPlatform": "ios",
-    "isVideo":true
-  },
-  {
-    "assetId": "NEWDEMOVIDEO123",
-    "targetPlatform": "generic",
-    "isVideo":true
-  }
+	{
+		"assetId": "NEWDEMO1",
+		"targetPlatform": "android"
+	},
+	{
+		"assetId": "NEWDEMO1",
+		"targetPlatform": "ios"
+	},
+	{
+		"assetId": "NEWDEMO1",
+		"targetPlatform": "generic"
+	},
+	{
+		"assetId": "NEWDEMO1",
+		"targetPlatform": "web"
+	},
+	{
+		"assetId": "NEWDEMOVIDEO123",
+		"targetPlatform": "android",
+		"isVideo": true
+	},
+	{
+		"assetId": "NEWDEMOVIDEO123",
+		"targetPlatform": "web",
+		"isVideo": true
+	},
+	{
+		"assetId": "NEWDEMOVIDEO123",
+		"targetPlatform": "ios",
+		"isVideo": true
+	},
+	{
+		"assetId": "NEWDEMOVIDEO123",
+		"targetPlatform": "generic",
+		"isVideo": true
+	}
 ]
