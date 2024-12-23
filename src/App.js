@@ -1,24 +1,22 @@
-import React, { useState } from "react";
-import styles from "./App.module.css";
-import Assets from "./Assets.json";
+import React, { useState } from 'react'
+import styles from './App.module.css'
+import Assets from './Assets.json'
 
-const ADN_BASE_URL_V1 = process.env.REACT_APP_ADN_BASE_URL_V1 || "";
-const ADN_BASE_URL_v2 = process.env.REACT_APP_ADN_BASE_URL_V2 || "";
-const DOMAIN_ID = process.env.REACT_APP_DOMAIN_ID || "";
-const ENV_ID = process.env.REACT_APP_ENV_ID || "";
+const ADN_BASE_URL = process.env.REACT_APP_ADN_BASE_URL || '';
+const DOMAIN_ID = process.env.REACT_APP_DOMAIN_ID || '';
+const ENV_ID = process.env.REACT_APP_ENV_ID || '';
 
 export default function Gallery() {
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('')
 
-  const filteredAssets = Assets.filter(
-    (asset) =>
-      asset.assetId.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      asset.targetPlatform.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredAssets = Assets.filter(asset => 
+    asset.assetId.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    asset.targetPlatform.toLowerCase().includes(searchQuery.toLowerCase())
+  )
 
   const renderAsset = (asset) => {
-    const assetUrl = `${ADN_BASE_URL_V1}${DOMAIN_ID}/${asset.assetId}/${ENV_ID}/${asset.targetPlatform}`;
-
+    const assetUrl = `${ADN_BASE_URL}${DOMAIN_ID}/${asset.assetId}/${ENV_ID}/${asset.targetPlatform}`;
+    // console.log(assetUrl)
     if (asset.isVideo) {
       return (
         <video className={styles.video} controls>
@@ -28,13 +26,17 @@ export default function Gallery() {
       );
     } else {
       return (
-        <img src={assetUrl} alt={asset.assetId} className={styles.image} />
+        <img
+          src={assetUrl}
+          alt={asset.assetId}
+          className={styles.image}
+        />
       );
     }
   };
 
   const renderGallery = () => {
-    if (!ADN_BASE_URL_V1 || !DOMAIN_ID || !ENV_ID) {
+    if (!ADN_BASE_URL || !DOMAIN_ID || !ENV_ID) {
       return <p>Error: Missing environment variables</p>;
     }
 
@@ -49,43 +51,11 @@ export default function Gallery() {
     ));
   };
 
-  const renderAssetV2 = (asset) => {
-    const assetUrl = `${ADN_BASE_URL_v2}${DOMAIN_ID}/${asset.assetId}/${ENV_ID}/${asset.targetPlatform}`;
-
-    if (asset.isVideo) {
-      return (
-        <video className={styles.video} controls>
-          <source src={assetUrl} type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-      );
-    } else {
-      return (
-        <img src={assetUrl} alt={asset.assetId} className={styles.image} />
-      );
-    }
-  };
-
-  const renderGalleryV2 = () => {
-    if (!ADN_BASE_URL_v2 || !DOMAIN_ID || !ENV_ID) {
-      return <p>Error: Missing environment variables</p>;
-    }
-
-    return filteredAssets.map((asset, index) => (
-      <div className={styles.assetContainer} key={index}>
-        {renderAssetV2(asset)}
-        <p className={styles.assetId}>{asset.assetId}</p>
-        <div className={styles.description}>
-          Target Platform: {asset.targetPlatform}
-        </div>
-      </div>
-    ));
-  };
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Nestor Asset Demo</h1>
       <p className={styles.dynamicText}>[{ENV_ID}]</p>
-
+      
       <div className={styles.searchContainer}>
         <input
           type="search"
@@ -95,17 +65,10 @@ export default function Gallery() {
           onChange={(e) => setSearchQuery(e.target.value)}
         />
       </div>
-      <div style={{ display: "flex", gap:0 }}>
-        <div style={{borderRight:"1px solid", paddingRight:10}}>
-          <p className={styles.dynamicText}>[Adn V1]</p>
-          <div className={styles.gallery}>{renderGallery()}</div>
-          <hr />
-        </div>
-        <div style={{ paddingLeft:10}}>
-          <p className={styles.dynamicText}>[Adn V2]</p>
-          <div className={styles.gallery}>{renderGalleryV2()}</div>
-        </div>
+
+      <div className={styles.gallery}>
+        {renderGallery()}
       </div>
     </div>
-  );
+  )
 }
