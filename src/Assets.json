@@ -1,33 +1,4 @@
-[{
-	"assetId": "asset26",
-	"targetPlatform": "generic",
-	"isVideo":true
-},
-{
-	"assetId": "asset26",
-	"targetPlatform": "web",
-	"isVideo":true
-},
-{
-	"assetId": "asset26",
-	"targetPlatform": "android",
-	"isVideo":true
-},
-{
-	"assetId": "asset26",
-	"targetPlatform": "ios",
-	"isVideo":true
-},
-{
-	"assetId": "asset27",
-	"targetPlatform": "android",
-	"isVideo":true
-},
-{
-	"assetId": "asset27",
-	"targetPlatform": "ios",
-	"isVideo":true
-},
+[
 	{
 		"assetId": "asset1",
 		"targetPlatform": "android"
