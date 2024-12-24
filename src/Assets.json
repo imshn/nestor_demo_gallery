@@ -1,38 +1,402 @@
 [
 	{
-		"assetId": "NEWDEMO1",
+		"assetId": "asset1",
 		"targetPlatform": "android"
 	},
 	{
-		"assetId": "NEWDEMO1",
+		"assetId": "asset1",
 		"targetPlatform": "ios"
 	},
 	{
-		"assetId": "NEWDEMO1",
+		"assetId": "asset1",
 		"targetPlatform": "generic"
 	},
 	{
-		"assetId": "NEWDEMO1",
+		"assetId": "asset1",
 		"targetPlatform": "web"
 	},
 	{
-		"assetId": "NEWDEMOVIDEO123",
-		"targetPlatform": "android",
-		"isVideo": true
+		"assetId": "asset2",
+		"targetPlatform": "android"
 	},
 	{
-		"assetId": "NEWDEMOVIDEO123",
-		"targetPlatform": "web",
-		"isVideo": true
+		"assetId": "asset2",
+		"targetPlatform": "ios"
 	},
 	{
-		"assetId": "NEWDEMOVIDEO123",
-		"targetPlatform": "ios",
-		"isVideo": true
+		"assetId": "asset2",
+		"targetPlatform": "generic"
 	},
 	{
-		"assetId": "NEWDEMOVIDEO123",
-		"targetPlatform": "generic",
-		"isVideo": true
+		"assetId": "asset2",
+		"targetPlatform": "web"
+	},
+	{
+		"assetId": "asset3",
+		"targetPlatform": "android"
+	},
+	{
+		"assetId": "asset3",
+		"targetPlatform": "ios"
+	},
+	{
+		"assetId": "asset3",
+		"targetPlatform": "generic"
+	},
+	{
+		"assetId": "asset3",
+		"targetPlatform": "web"
+	},
+	{
+		"assetId": "asset4",
+		"targetPlatform": "android"
+	},
+	{
+		"assetId": "asset4",
+		"targetPlatform": "ios"
+	},
+	{
+		"assetId": "asset4",
+		"targetPlatform": "generic"
+	},
+	{
+		"assetId": "asset4",
+		"targetPlatform": "web"
+	},
+	{
+		"assetId": "asset5",
+		"targetPlatform": "android"
+	},
+	{
+		"assetId": "asset5",
+		"targetPlatform": "ios"
+	},
+	{
+		"assetId": "asset5",
+		"targetPlatform": "generic"
+	},
+	{
+		"assetId": "asset5",
+		"targetPlatform": "web"
+	},
+	{
+		"assetId": "asset6",
+		"targetPlatform": "android"
+	},
+	{
+		"assetId": "asset6",
+		"targetPlatform": "ios"
+	},
+	{
+		"assetId": "asset6",
+		"targetPlatform": "generic"
+	},
+	{
+		"assetId": "asset6",
+		"targetPlatform": "web"
+	},
+	{
+		"assetId": "asset7",
+		"targetPlatform": "android"
+	},
+	{
+		"assetId": "asset7",
+		"targetPlatform": "ios"
+	},
+	{
+		"assetId": "asset7",
+		"targetPlatform": "generic"
+	},
+	{
+		"assetId": "asset7",
+		"targetPlatform": "web"
+	},
+	{
+		"assetId": "asset8",
+		"targetPlatform": "android"
+	},
+	{
+		"assetId": "asset8",
+		"targetPlatform": "ios"
+	},
+	{
+		"assetId": "asset8",
+		"targetPlatform": "generic"
+	},
+	{
+		"assetId": "asset8",
+		"targetPlatform": "web"
+	},
+	{
+		"assetId": "asset9",
+		"targetPlatform": "android"
+	},
+	{
+		"assetId": "asset9",
+		"targetPlatform": "ios"
+	},
+	{
+		"assetId": "asset9",
+		"targetPlatform": "generic"
+	},
+	{
+		"assetId": "asset9",
+		"targetPlatform": "web"
+	},
+	{
+		"assetId": "asset10",
+		"targetPlatform": "android"
+	},
+	{
+		"assetId": "asset10",
+		"targetPlatform": "ios"
+	},
+	{
+		"assetId": "asset10",
+		"targetPlatform": "generic"
+	},
+	{
+		"assetId": "asset10",
+		"targetPlatform": "web"
+	},
+	{
+		"assetId": "asset11",
+		"targetPlatform": "android"
+	},
+	{
+		"assetId": "asset11",
+		"targetPlatform": "ios"
+	},
+	{
+		"assetId": "asset11",
+		"targetPlatform": "generic"
+	},
+	{
+		"assetId": "asset11",
+		"targetPlatform": "web"
+	},
+	{
+		"assetId": "asset12",
+		"targetPlatform": "android"
+	},
+	{
+		"assetId": "asset12",
+		"targetPlatform": "ios"
+	},
+	{
+		"assetId": "asset12",
+		"targetPlatform": "generic"
+	},
+	{
+		"assetId": "asset12",
+		"targetPlatform": "web"
+	},
+	{
+		"assetId": "asset13",
+		"targetPlatform": "android"
+	},
+	{
+		"assetId": "asset13",
+		"targetPlatform": "ios"
+	},
+	{
+		"assetId": "asset13",
+		"targetPlatform": "generic"
+	},
+	{
+		"assetId": "asset13",
+		"targetPlatform": "web"
+	},
+	{
+		"assetId": "asset14",
+		"targetPlatform": "android"
+	},
+	{
+		"assetId": "asset14",
+		"targetPlatform": "ios"
+	},
+	{
+		"assetId": "asset14",
+		"targetPlatform": "generic"
+	},
+	{
+		"assetId": "asset14",
+		"targetPlatform": "web"
+	},
+	{
+		"assetId": "asset15",
+		"targetPlatform": "android"
+	},
+	{
+		"assetId": "asset15",
+		"targetPlatform": "ios"
+	},
+	{
+		"assetId": "asset15",
+		"targetPlatform": "generic"
+	},
+	{
+		"assetId": "asset15",
+		"targetPlatform": "web"
+	},
+	{
+		"assetId": "asset16",
+		"targetPlatform": "android"
+	},
+	{
+		"assetId": "asset16",
+		"targetPlatform": "ios"
+	},
+	{
+		"assetId": "asset16",
+		"targetPlatform": "generic"
+	},
+	{
+		"assetId": "asset16",
+		"targetPlatform": "web"
+	},
+	{
+		"assetId": "asset17",
+		"targetPlatform": "android"
+	},
+	{
+		"assetId": "asset17",
+		"targetPlatform": "ios"
+	},
+	{
+		"assetId": "asset17",
+		"targetPlatform": "generic"
+	},
+	{
+		"assetId": "asset17",
+		"targetPlatform": "web"
+	},
+	{
+		"assetId": "asset18",
+		"targetPlatform": "android"
+	},
+	{
+		"assetId": "asset18",
+		"targetPlatform": "ios"
+	},
+	{
+		"assetId": "asset18",
+		"targetPlatform": "generic"
+	},
+	{
+		"assetId": "asset18",
+		"targetPlatform": "web"
+	},
+	{
+		"assetId": "asset19",
+		"targetPlatform": "android"
+	},
+	{
+		"assetId": "asset19",
+		"targetPlatform": "ios"
+	},
+	{
+		"assetId": "asset19",
+		"targetPlatform": "generic"
+	},
+	{
+		"assetId": "asset19",
+		"targetPlatform": "web"
+	},
+	{
+		"assetId": "asset20",
+		"targetPlatform": "android"
+	},
+	{
+		"assetId": "asset20",
+		"targetPlatform": "ios"
+	},
+	{
+		"assetId": "asset20",
+		"targetPlatform": "generic"
+	},
+	{
+		"assetId": "asset20",
+		"targetPlatform": "web"
+	},
+	{
+		"assetId": "asset21",
+		"targetPlatform": "android"
+	},
+	{
+		"assetId": "asset21",
+		"targetPlatform": "ios"
+	},
+	{
+		"assetId": "asset21",
+		"targetPlatform": "generic"
+	},
+	{
+		"assetId": "asset21",
+		"targetPlatform": "web"
+	},
+	{
+		"assetId": "asset22",
+		"targetPlatform": "android"
+	},
+	{
+		"assetId": "asset22",
+		"targetPlatform": "ios"
+	},
+	{
+		"assetId": "asset22",
+		"targetPlatform": "generic"
+	},
+	{
+		"assetId": "asset22",
+		"targetPlatform": "web"
+	},
+	{
+		"assetId": "asset23",
+		"targetPlatform": "android"
+	},
+	{
+		"assetId": "asset23",
+		"targetPlatform": "ios"
+	},
+	{
+		"assetId": "asset23",
+		"targetPlatform": "generic"
+	},
+	{
+		"assetId": "asset23",
+		"targetPlatform": "web"
+	},
+	{
+		"assetId": "asset24",
+		"targetPlatform": "android"
+	},
+	{
+		"assetId": "asset24",
+		"targetPlatform": "ios"
+	},
+	{
+		"assetId": "asset24",
+		"targetPlatform": "generic"
+	},
+	{
+		"assetId": "asset24",
+		"targetPlatform": "web"
+	},
+	{
+		"assetId": "asset25",
+		"targetPlatform": "android"
+	},
+	{
+		"assetId": "asset25",
+		"targetPlatform": "ios"
+	},
+	{
+		"assetId": "asset25",
+		"targetPlatform": "generic"
+	},
+	{
+		"assetId": "asset25",
+		"targetPlatform": "web"
 	}
 ]
