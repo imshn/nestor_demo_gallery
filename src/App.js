@@ -8,14 +8,14 @@ const ENV_ID = process.env.REACT_APP_ENV_ID || '';
 
 export default function Gallery() {
   const [searchQuery, setSearchQuery] = useState('')
-
+  const [selectedService, setSelectedService] = useState(ADN_BASE_URL)
   const filteredAssets = Assets.filter(asset => 
     asset.assetId.toLowerCase().includes(searchQuery.toLowerCase()) ||
     asset.targetPlatform.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
   const renderAsset = (asset) => {
-    const assetUrl = `${ADN_BASE_URL}${DOMAIN_ID}/${asset.assetId}/${ENV_ID}/${asset.targetPlatform}`;
+    const assetUrl = `${selectedService}${DOMAIN_ID}/${asset.assetId}/${ENV_ID}/${asset.targetPlatform}`;
     // console.log(assetUrl)
     if (asset.isVideo) {
       return (
@@ -55,6 +55,13 @@ export default function Gallery() {
     <div className={styles.container}>
       <h1 className={styles.title}>Nestor Asset Demo</h1>
       <p className={styles.dynamicText}>[{ENV_ID}]</p>
+      <div>
+        <select className={styles.serviceSelector} value={selectedService} onChange={(e) => setSelectedService(e.target.value)}>
+          <option value="" disabled>Select a service</option>
+          <option value="https://adn.nestortech.io/api/va/">ADN v1</option>
+          <option value="https://adn-v2-delta.vercel.app/api/va/">ADN delta v2</option>
+        </select>
+      </div>
       
       <div className={styles.searchContainer}>
         <input
