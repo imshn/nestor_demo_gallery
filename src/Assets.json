@@ -1,4 +1,11 @@
 [
+	
+	{
+		"assetId": "100mbtest",
+		"targetPlatform": "web",
+		"isVideo":true
+	},
+	
 	{
 		"assetId": "asset1",
 		"targetPlatform": "android"

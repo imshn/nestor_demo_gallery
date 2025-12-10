@@ -75,6 +75,11 @@ export default function Gallery() {
 
       <div className={styles.gallery}>
         {renderGallery()}
+        <video className={styles.video} controls>
+          <source src={`${selectedService}653913c757e989455aa8f71b/100mbtest/DEV/web`} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+        {/* <img className={styles.image} src="" alt=''/> */}
       </div>
     </div>
   )
