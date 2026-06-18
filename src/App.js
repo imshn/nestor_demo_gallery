@@ -235,7 +235,7 @@ export default function Gallery() {
         </div>
       </header>
 
-      <section className={styles.perfPanel}>
+      {/* <section className={styles.perfPanel}>
         <div className={styles.perfHeader}>
           <div>
             <p className={styles.perfTitle}>Service speed</p>
@@ -295,7 +295,7 @@ export default function Gallery() {
             ))}
           </div>
         )}
-      </section>
+      </section> */}
 
       <main className={styles.gallery}>
         {missingConfig ? (
