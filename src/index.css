@@ -8,6 +8,9 @@
   --accent-ink: #1a1310;
   --grain-opacity: 0.05;
   --shadow: rgba(0, 0, 0, 0.6);
+  --shadow-resting: rgba(0, 0, 0, 0.5);
+  --shimmer-mid: #221d17;
+  --line-strong: rgba(255, 255, 255, 0.2);
   --overlay: rgba(8, 7, 6, 0.88);
   color-scheme: dark;
 }
@@ -17,11 +20,14 @@
   --bg-raised: #ffffff;
   --line: rgba(20, 18, 16, 0.1);
   --ink: #1d1a17;
-  --ink-dim: #756f66;
-  --accent: #a8632b;
+  --ink-dim: #6b655c;
+  --accent: #8f4f1f;
   --accent-ink: #fbf3e9;
   --grain-opacity: 0.025;
   --shadow: rgba(40, 32, 20, 0.16);
+  --shadow-resting: rgba(40, 32, 20, 0.1);
+  --shimmer-mid: #e8e2d6;
+  --line-strong: rgba(20, 18, 16, 0.22);
   --overlay: rgba(243, 239, 232, 0.88);
   color-scheme: light;
 }

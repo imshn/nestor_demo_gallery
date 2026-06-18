@@ -1,0 +1,137 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-06-18T00:00:00.000Z",
+  "title": "Design System: Nestor Gallery",
+  "extensions": {
+    "colorMeta": {
+      "warm-amber": {
+        "role": "primary",
+        "displayName": "Warm Amber",
+        "canonical": "#c98a4b",
+        "tonalRamp": ["#2a1c0f", "#4a3119", "#6e4924", "#93632f", "#b97d3c", "#c98a4b", "#dba874", "#efd2b3"]
+      },
+      "accent-ink": {
+        "role": "on-primary",
+        "displayName": "Accent Ink",
+        "canonical": "#1a1310",
+        "tonalRamp": ["#0a0807", "#1a1310", "#2c221c", "#403229", "#564537", "#6d5a47", "#897a6a", "#a99d91"]
+      },
+      "bg": {
+        "role": "neutral-ground",
+        "displayName": "Off-Black Ground",
+        "canonical": "#0b0a09",
+        "tonalRamp": ["#0b0a09", "#16140f", "#231f18", "#322c22", "#433b2e", "#564c3c", "#6c604c", "#85765f"]
+      },
+      "bg-raised": {
+        "role": "neutral-surface",
+        "displayName": "Raised Surface",
+        "canonical": "#141210",
+        "tonalRamp": ["#0b0a09", "#141210", "#211d18", "#312b23", "#433b30", "#574c3e", "#6d604e", "#857562"]
+      },
+      "ink": {
+        "role": "neutral-text",
+        "displayName": "Ink",
+        "canonical": "#ece8e3",
+        "tonalRamp": ["#3a3631", "#544e46", "#71695d", "#908576", "#aea090", "#cabfae", "#e3dbcd", "#ece8e3"]
+      },
+      "ink-dim": {
+        "role": "neutral-text-muted",
+        "displayName": "Ink Dim",
+        "canonical": "#9b958c",
+        "tonalRamp": ["#2c2924", "#433f38", "#5b554c", "#746d62", "#8e857a", "#9b958c", "#b3ada3", "#cbc6bd"]
+      },
+      "line": {
+        "role": "border",
+        "displayName": "Hairline",
+        "canonical": "rgba(255,255,255,0.08)",
+        "tonalRamp": ["rgba(255,255,255,0.02)", "rgba(255,255,255,0.04)", "rgba(255,255,255,0.06)", "rgba(255,255,255,0.08)", "rgba(255,255,255,0.12)", "rgba(255,255,255,0.16)", "rgba(255,255,255,0.24)", "rgba(255,255,255,0.32)"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "The single page <h1> only. Never reused for smaller headings." },
+      "body": { "displayName": "Body", "purpose": "Subtitle copy, lightbox metadata, general prose." },
+      "label": { "displayName": "Label", "purpose": "Eyebrow, platform tags, pill filters, perf-panel category headers." }
+    },
+    "shadows": [
+      { "name": "resting", "value": "0 10px 24px -18px var(--shadow-resting)", "purpose": "Default state for tiles and panels per the Always-Lit Rule. Always present, never purely flat." },
+      { "name": "lifted", "value": "0 18px 36px -18px var(--shadow)", "purpose": "Hover/focus state for gallery tiles, paired with translateY(-3px) and a 4% media zoom." },
+      { "name": "modal", "value": "0 24px 60px -24px var(--shadow)", "purpose": "The lightbox surface, always rendered as clearly elevated above the page." }
+    ],
+    "motion": [
+      { "name": "tile-hover", "value": "transform 260ms ease, box-shadow 260ms ease", "purpose": "Gallery tile lift and shadow deepen on hover/focus." },
+      { "name": "media-zoom", "value": "transform 400ms ease", "purpose": "4% scale zoom on tile media on hover, paired with the tile lift." },
+      { "name": "control-transition", "value": "border-color 200-220ms ease, color 200ms ease, background 200ms ease", "purpose": "Pills, inputs, and buttons on hover/focus." }
+    ],
+    "breakpoints": [
+      { "name": "md", "value": "1100px" },
+      { "name": "sm", "value": "760px" },
+      { "name": "xs", "value": "520px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Single primary action per panel, e.g. \"Run speed test\".",
+      "html": "<button class=\"ds-btn-primary\">Run speed test</button>",
+      "css": ".ds-btn-primary { font-family: 'Outfit', sans-serif; font-size: 0.82rem; color: #1a1310; background: #c98a4b; border: none; border-radius: 999px; padding: 9px 18px; cursor: pointer; transition: opacity 200ms ease; } .ds-btn-primary:hover { opacity: 0.88; } .ds-btn-primary:focus-visible { outline: 2px solid #c98a4b; outline-offset: 2px; } .ds-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }"
+    },
+    {
+      "name": "Filter Pill",
+      "kind": "chip",
+      "refersTo": "pill-filter",
+      "description": "Platform filter pill, inactive and active states.",
+      "html": "<button class=\"ds-pill\">android</button> <button class=\"ds-pill ds-pill-active\">ios</button>",
+      "css": ".ds-pill { font-family: 'Outfit', sans-serif; font-size: 0.82rem; color: #9b958c; background: transparent; border: 1px solid rgba(255,255,255,0.08); border-radius: 999px; padding: 7px 16px; cursor: pointer; transition: border-color 200ms ease, color 200ms ease, background 200ms ease; } .ds-pill:hover { color: #ece8e3; border-color: rgba(255,255,255,0.2); } .ds-pill:focus-visible { outline: 2px solid #c98a4b; outline-offset: 2px; } .ds-pill-active { color: #1a1310; background: #c98a4b; border-color: #c98a4b; }"
+    },
+    {
+      "name": "Search Input",
+      "kind": "input",
+      "refersTo": "input-search",
+      "description": "Search field with an inset Hugeicons search glyph.",
+      "html": "<div class=\"ds-search-wrap\"><svg class=\"ds-search-icon\" viewBox=\"0 0 24 24\" fill=\"none\"><path d=\"M17 17L21 21\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><path d=\"M19 11C19 6.58 15.42 3 11 3C6.58 3 3 6.58 3 11C3 15.42 6.58 19 11 19C15.42 19 19 15.42 19 11Z\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg><input class=\"ds-search-input\" type=\"search\" placeholder=\"Search by asset or platform\"/></div>",
+      "css": ".ds-search-wrap { position: relative; max-width: 360px; } .ds-search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: #9b958c; } .ds-search-input { width: 100%; font-family: 'Outfit', sans-serif; font-size: 0.92rem; color: #ece8e3; background: #141210; border: 1px solid rgba(255,255,255,0.08); border-radius: 999px; padding: 11px 16px 11px 38px; outline: none; transition: border-color 220ms ease, box-shadow 220ms ease; } .ds-search-input:focus { border-color: #c98a4b; box-shadow: 0 0 0 3px rgba(201,138,75,0.18); }"
+    },
+    {
+      "name": "Gallery Tile",
+      "kind": "card",
+      "refersTo": "tile-gallery",
+      "description": "Signature bento gallery cell: full-bleed media with a bottom gradient-scrim caption.",
+      "html": "<button class=\"ds-tile\"><div class=\"ds-tile-media\"><img src=\"\" alt=\"\"/></div><div class=\"ds-tile-meta\"><span class=\"ds-tile-id\">asset12</span><span class=\"ds-tile-platform\">IOS</span></div></button>",
+      "css": ".ds-tile { position: relative; display: block; padding: 0; border: none; background: #141210; border-radius: 14px; overflow: hidden; cursor: pointer; box-shadow: 0 10px 24px -18px rgba(0,0,0,0.5); transition: transform 260ms ease, box-shadow 260ms ease; } .ds-tile:hover { transform: translateY(-3px); box-shadow: 0 18px 36px -18px rgba(0,0,0,0.6); } .ds-tile:focus-visible { outline: 2px solid #c98a4b; outline-offset: 3px; } .ds-tile-media { position: absolute; inset: 0; } .ds-tile-media img { width: 100%; height: 100%; object-fit: cover; transition: transform 400ms ease; } .ds-tile:hover .ds-tile-media img { transform: scale(1.04); } .ds-tile-meta { position: absolute; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 24px 12px 10px; background: linear-gradient(to top, rgba(0,0,0,0.65), transparent); } .ds-tile-id { font-family: 'Outfit', sans-serif; font-size: 0.85rem; color: #fff; } .ds-tile-platform { font-family: 'Outfit', sans-serif; font-size: 0.68rem; letter-spacing: 0.04em; text-transform: uppercase; color: rgba(255,255,255,0.72); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Amber Archive",
+    "overview": "This system documents a curated archive, not a dashboard. Every render Nestor's delivery network has produced lives behind a warm, low-lit interface: an off-black canvas, one amber accent used sparingly, and an editorial display face (Fraunces) reserved for the single page title. The bento gallery is the centerpiece; everything else (search, filters, the speed test panel) is deliberately quiet so the renders stay the loudest thing on screen. This explicitly rejects the generic SaaS dashboard look: no blue/purple gradient admin chrome, no identical equal-sized card grids, no cream/beige \"safe\" body background, no gradient text, no uppercase tracked eyebrows scattered above every section.",
+    "keyCharacteristics": [
+      "Off-black/off-white dual surface, never pure #000 or pure #fff.",
+      "One accent (Warm Amber) carries all emphasis; no secondary or tertiary color roles.",
+      "Fraunces serif is reserved exclusively for the display headline; everything else is Outfit.",
+      "Full-bleed media tiles with bottom gradient-scrim captions, not caption bars below thumbnails.",
+      "Persistent, layered elevation: raised surfaces always carry a resting shadow, not just on hover."
+    ],
+    "rules": [
+      { "name": "The One Accent Rule", "body": "Warm Amber is the only saturated color anywhere in the interface. If a second color is ever needed, desaturate it into the neutral ramp before reaching for a new hue.", "section": "colors" },
+      { "name": "The Dual Surface Rule", "body": "Dark and light are both fully specified token sets, swapped via [data-theme='light'], not a dark theme with light values bolted on as an afterthought.", "section": "colors" },
+      { "name": "The One Serif Rule", "body": "Fraunces appears in exactly one place: the page <h1>. Every other text element uses Outfit.", "section": "typography" },
+      { "name": "The Always-Lit Rule", "body": "Nothing on this surface is perfectly flat. Tiles, panels, and modals carry a resting shadow before any interaction occurs; hover/focus deepen it, they don't introduce it from nothing.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do keep Warm Amber to a single accent role; every other color stays in the neutral ramp.",
+      "Do give every tile, panel, and modal a resting shadow per the Always-Lit Rule, even with no interaction.",
+      "Do reserve Fraunces for the one page <h1>; everything else is Outfit.",
+      "Do render media full-bleed in gallery tiles with a gradient-scrim caption, never a separate caption bar.",
+      "Do use Hugeicons SVG icons for every icon need; never emoji or raw unicode glyphs."
+    ],
+    "donts": [
+      "Don't introduce a second saturated accent color; desaturate into the neutral ramp instead.",
+      "Don't build a generic SaaS dashboard look: no blue/purple gradient admin chrome.",
+      "Don't use identical equal-sized card grids; the bento span rhythm is the deliberate alternative.",
+      "Don't default to a cream/beige body background.",
+      "Don't scatter uppercase tracked eyebrows above every section.",
+      "Don't use border-left/border-right colored stripes as an accent technique anywhere."
+    ]
+  }
+}

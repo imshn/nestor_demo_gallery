@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { Sun01Icon, Moon02Icon, Cancel01Icon, PlayIcon, Search01Icon } from '@hugeicons/core-free-icons'
 import styles from './App.module.css'
@@ -31,6 +31,22 @@ export default function Gallery() {
     document.documentElement.setAttribute('data-theme', theme)
     window.localStorage.setItem(THEME_KEY, theme)
   }, [theme])
+
+  const lightboxCloseRef = useRef(null)
+  const lastFocusedTileRef = useRef(null)
+
+  useEffect(() => {
+    if (!activeAsset) {
+      lastFocusedTileRef.current?.focus()
+      return
+    }
+    lightboxCloseRef.current?.focus()
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape') setActiveAsset(null)
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [activeAsset])
 
   const platforms = useMemo(
     () => ['all', ...new Set(Assets.map((asset) => asset.targetPlatform))],
@@ -104,7 +120,10 @@ export default function Gallery() {
       <button
         key={key}
         className={styles.tile}
-        onClick={() => setActiveAsset({ ...asset, url })}
+        onClick={(e) => {
+          lastFocusedTileRef.current = e.currentTarget
+          setActiveAsset({ ...asset, url })
+        }}
         aria-label={`Open ${asset.assetId}, ${asset.targetPlatform}`}
       >
         <div className={styles.tileMedia}>
@@ -180,6 +199,7 @@ export default function Gallery() {
               className={styles.serviceSelector}
               value={selectedService}
               onChange={(e) => setSelectedService(e.target.value)}
+              aria-label="Select delivery service"
             >
               <option value="" disabled>
                 Select a service
@@ -204,9 +224,15 @@ export default function Gallery() {
 
         <h1 className={styles.title}>The Gallery</h1>
         <p className={styles.subtitle}>
-          Every render Nestor has delivered across environment{' '}
-          <span className={styles.tag}>{ENV_ID || 'unset'}</span>, organized by platform and ready
-          to inspect.
+          {ENV_ID ? (
+            <>
+              Every render Nestor has delivered across environment{' '}
+              <span className={styles.tag}>{ENV_ID}</span>, organized by platform and ready to
+              inspect.
+            </>
+          ) : (
+            'Every render Nestor has delivered, organized by platform and ready to inspect.'
+          )}
         </p>
 
         <div className={styles.controls}>
@@ -215,6 +241,7 @@ export default function Gallery() {
             <input
               type="search"
               placeholder="Search by asset or platform"
+              aria-label="Search assets"
               className={styles.searchInput}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -227,6 +254,7 @@ export default function Gallery() {
                 key={platform}
                 className={`${styles.pill} ${platformFilter === platform ? styles.pillActive : ''}`}
                 onClick={() => setPlatformFilter(platform)}
+                aria-pressed={platformFilter === platform}
               >
                 {platform}
               </button>
@@ -235,10 +263,10 @@ export default function Gallery() {
         </div>
       </header>
 
-      {/* <section className={styles.perfPanel}>
+      <section className={styles.perfPanel}>
         <div className={styles.perfHeader}>
           <div>
-            <p className={styles.perfTitle}>Service speed</p>
+            <h2 className={styles.perfTitle}>Service speed</h2>
             <p className={styles.perfHint}>
               Loads {imageSamples.length} images and {videoSamples.length} videos from each
               service and times them.
@@ -255,13 +283,13 @@ export default function Gallery() {
         </div>
 
         {benchmark.status !== 'idle' && (
-          <div className={styles.perfCategories}>
+          <div className={styles.perfCategories} aria-live="polite">
             {[
               { key: 'image', label: 'Images', data: imageStats },
               { key: 'video', label: 'Videos', data: videoStats },
             ].map(({ key, label, data }) => (
               <div key={key} className={styles.perfCategory}>
-                <p className={styles.perfCategoryLabel}>{label}</p>
+                <h3 className={styles.perfCategoryLabel}>{label}</h3>
                 <div className={styles.perfRows}>
                   {data.stats.map(({ service, avg, min, samples }) => {
                     const isFastest =
@@ -295,19 +323,19 @@ export default function Gallery() {
             ))}
           </div>
         )}
-      </section> */}
+      </section>
 
       <main className={styles.gallery}>
         {missingConfig ? (
           <div className={styles.emptyState}>
-            <p className={styles.emptyTitle}>Configuration missing</p>
+            <h2 className={styles.emptyTitle}>Configuration missing</h2>
             <p className={styles.emptyBody}>
               Set REACT_APP_ADN_BASE_URL, REACT_APP_DOMAIN_ID and REACT_APP_ENV_ID to load assets.
             </p>
           </div>
         ) : filteredAssets.length === 0 ? (
           <div className={styles.emptyState}>
-            <p className={styles.emptyTitle}>No matches</p>
+            <h2 className={styles.emptyTitle}>No matches</h2>
             <p className={styles.emptyBody}>Try a different search term or platform.</p>
           </div>
         ) : (
@@ -324,6 +352,7 @@ export default function Gallery() {
         >
           <div className={styles.lightboxInner} onClick={(e) => e.stopPropagation()}>
             <button
+              ref={lightboxCloseRef}
               className={styles.lightboxClose}
               onClick={() => setActiveAsset(null)}
               aria-label="Close"
