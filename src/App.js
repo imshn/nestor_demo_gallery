@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import styles from './App.module.css'
 import Assets from './Assets.json'
 
@@ -6,81 +6,194 @@ const ADN_BASE_URL = process.env.REACT_APP_ADN_BASE_URL || '';
 const DOMAIN_ID = process.env.REACT_APP_DOMAIN_ID || '';
 const ENV_ID = process.env.REACT_APP_ENV_ID || '';
 
+const SERVICES = [
+  { label: 'ADN v1', value: 'https://adn.nestortech.io/api/va/' },
+  { label: 'ADN delta v2', value: 'https://adn-v2-delta.vercel.app/api/va/' },
+]
+
 export default function Gallery() {
   const [searchQuery, setSearchQuery] = useState('')
+  const [platformFilter, setPlatformFilter] = useState('all')
   const [selectedService, setSelectedService] = useState(ADN_BASE_URL)
-  const filteredAssets = Assets.filter(asset => 
-    asset.assetId.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    asset.targetPlatform.toLowerCase().includes(searchQuery.toLowerCase())
+  const [activeAsset, setActiveAsset] = useState(null)
+  const [loadedKeys, setLoadedKeys] = useState({})
+
+  const platforms = useMemo(
+    () => ['all', ...new Set(Assets.map((asset) => asset.targetPlatform))],
+    []
   )
 
-  const renderAsset = (asset) => {
-    const assetUrl = `${selectedService}${DOMAIN_ID}/${asset.assetId}/${ENV_ID}/${asset.targetPlatform}`;
-    // console.log(assetUrl)
-    if (asset.isVideo) {
-      return (
-        <video className={styles.video} controls>
-          <source src={assetUrl} type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-      );
-    } else {
-      return (
-        <img
-          src={assetUrl}
-          alt={asset.assetId}
-          className={styles.image}
-        />
-      );
-    }
-  };
+  const filteredAssets = Assets.filter((asset) => {
+    const matchesQuery =
+      asset.assetId.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.targetPlatform.toLowerCase().includes(searchQuery.toLowerCase())
+    const matchesPlatform = platformFilter === 'all' || asset.targetPlatform === platformFilter
+    return matchesQuery && matchesPlatform
+  })
 
-  const renderGallery = () => {
-    if (!ADN_BASE_URL || !DOMAIN_ID || !ENV_ID) {
-      return <p>Error: Missing environment variables</p>;
-    }
+  const assetUrl = (asset) =>
+    `${selectedService}${DOMAIN_ID}/${asset.assetId}/${ENV_ID}/${asset.targetPlatform}`
 
-    return filteredAssets.map((asset, index) => (
-      <div className={styles.assetContainer} key={index}>
-        {renderAsset(asset)}
-        <p className={styles.assetId}>{asset.assetId}</p>
-        <div className={styles.description}>
-          Target Platform: {asset.targetPlatform}
+  const markLoaded = (key) => setLoadedKeys((prev) => ({ ...prev, [key]: true }))
+
+  const renderTile = (asset, index) => {
+    const key = `${asset.assetId}-${asset.targetPlatform}-${index}`
+    const url = assetUrl(asset)
+    const isLoaded = !!loadedKeys[key]
+
+    return (
+      <button
+        key={key}
+        className={styles.tile}
+        onClick={() => setActiveAsset({ ...asset, url })}
+        aria-label={`Open ${asset.assetId}, ${asset.targetPlatform}`}
+      >
+        <div className={styles.tileMedia}>
+          {!isLoaded && <div className={styles.tileSkeleton} />}
+          {asset.isVideo ? (
+            <video
+              className={styles.media}
+              muted
+              playsInline
+              preload="metadata"
+              onLoadedData={() => markLoaded(key)}
+              style={{ opacity: isLoaded ? 1 : 0 }}
+            >
+              <source src={url} type="video/mp4" />
+            </video>
+          ) : (
+            <img
+              className={styles.media}
+              src={url}
+              alt={asset.assetId}
+              loading="lazy"
+              onLoad={() => markLoaded(key)}
+              style={{ opacity: isLoaded ? 1 : 0 }}
+            />
+          )}
+          {asset.isVideo && <span className={styles.playBadge}>&#9656;</span>}
         </div>
-      </div>
-    ));
-  };
+        <div className={styles.tileMeta}>
+          <span className={styles.tileId}>{asset.assetId}</span>
+          <span className={styles.tilePlatform}>{asset.targetPlatform}</span>
+        </div>
+      </button>
+    )
+  }
+
+  const missingConfig = !ADN_BASE_URL || !DOMAIN_ID || !ENV_ID
 
   return (
-    <div className={styles.container}>
-      <h1 className={styles.title}>Nestor Asset Demo</h1>
-      <p className={styles.dynamicText}>[{ENV_ID}]</p>
-      <div>
-        <select className={styles.serviceSelector} value={selectedService} onChange={(e) => setSelectedService(e.target.value)}>
-          <option value="" disabled>Select a service</option>
-          <option value="https://adn.nestortech.io/api/va/">ADN v1</option>
-          <option value="https://adn-v2-delta.vercel.app/api/va/">ADN delta v2</option>
-        </select>
-      </div>
-      
-      <div className={styles.searchContainer}>
-        <input
-          type="search"
-          placeholder="Search assets..."
-          className={styles.searchInput}
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-      </div>
+    <div className={styles.page}>
+      <div className={styles.grain} aria-hidden="true" />
 
-      <div className={styles.gallery}>
-        {renderGallery()}
-        <video className={styles.video} controls>
-          <source src={`${selectedService}653913c757e989455aa8f71b/100mbtest/DEV/web`} type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-        {/* <img className={styles.image} src="" alt=''/> */}
-      </div>
+      <header className={styles.header}>
+        <div className={styles.headerTop}>
+          <span className={styles.eyebrow}>Delivery network archive</span>
+          <select
+            className={styles.serviceSelector}
+            value={selectedService}
+            onChange={(e) => setSelectedService(e.target.value)}
+          >
+            <option value="" disabled>
+              Select a service
+            </option>
+            {SERVICES.map((service) => (
+              <option key={service.value} value={service.value}>
+                {service.label}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <h1 className={styles.title}>The Gallery</h1>
+        <p className={styles.subtitle}>
+          Every render Nestor has delivered across environment{' '}
+          <span className={styles.tag}>{ENV_ID || 'unset'}</span>, organized by platform and ready
+          to inspect.
+        </p>
+
+        <div className={styles.controls}>
+          <div className={styles.searchWrap}>
+            <svg
+              className={styles.searchIcon}
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
+              <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" strokeWidth="2" />
+            </svg>
+            <input
+              type="search"
+              placeholder="Search by asset or platform"
+              className={styles.searchInput}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+
+          <div className={styles.pillRow}>
+            {platforms.map((platform) => (
+              <button
+                key={platform}
+                className={`${styles.pill} ${platformFilter === platform ? styles.pillActive : ''}`}
+                onClick={() => setPlatformFilter(platform)}
+              >
+                {platform}
+              </button>
+            ))}
+          </div>
+        </div>
+      </header>
+
+      <main className={styles.gallery}>
+        {missingConfig ? (
+          <div className={styles.emptyState}>
+            <p className={styles.emptyTitle}>Configuration missing</p>
+            <p className={styles.emptyBody}>
+              Set REACT_APP_ADN_BASE_URL, REACT_APP_DOMAIN_ID and REACT_APP_ENV_ID to load assets.
+            </p>
+          </div>
+        ) : filteredAssets.length === 0 ? (
+          <div className={styles.emptyState}>
+            <p className={styles.emptyTitle}>No matches</p>
+            <p className={styles.emptyBody}>Try a different search term or platform.</p>
+          </div>
+        ) : (
+          filteredAssets.map(renderTile)
+        )}
+      </main>
+
+      {activeAsset && (
+        <div
+          className={styles.lightbox}
+          role="dialog"
+          aria-modal="true"
+          onClick={() => setActiveAsset(null)}
+        >
+          <div className={styles.lightboxInner} onClick={(e) => e.stopPropagation()}>
+            <button
+              className={styles.lightboxClose}
+              onClick={() => setActiveAsset(null)}
+              aria-label="Close"
+            >
+              &times;
+            </button>
+            {activeAsset.isVideo ? (
+              <video className={styles.lightboxMedia} controls autoPlay>
+                <source src={activeAsset.url} type="video/mp4" />
+              </video>
+            ) : (
+              <img className={styles.lightboxMedia} src={activeAsset.url} alt={activeAsset.assetId} />
+            )}
+            <div className={styles.lightboxMeta}>
+              <span>{activeAsset.assetId}</span>
+              <span className={styles.tilePlatform}>{activeAsset.targetPlatform}</span>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
