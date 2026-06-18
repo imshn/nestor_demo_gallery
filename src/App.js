@@ -1,4 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { Sun01Icon, Moon02Icon, Cancel01Icon, PlayIcon, Search01Icon } from '@hugeicons/core-free-icons'
 import styles from './App.module.css'
 import Assets from './Assets.json'
 
@@ -18,6 +20,7 @@ export default function Gallery() {
   const [selectedService, setSelectedService] = useState(ADN_BASE_URL)
   const [activeAsset, setActiveAsset] = useState(null)
   const [loadedKeys, setLoadedKeys] = useState({})
+  const [benchmark, setBenchmark] = useState({ status: 'idle', results: {} })
   const [theme, setTheme] = useState(() => {
     const stored = window.localStorage.getItem(THEME_KEY)
     if (stored) return stored
@@ -42,10 +45,55 @@ export default function Gallery() {
     return matchesQuery && matchesPlatform
   })
 
-  const assetUrl = (asset) =>
-    `${selectedService}${DOMAIN_ID}/${asset.assetId}/${ENV_ID}/${asset.targetPlatform}`
+  const assetUrl = (asset, baseUrl = selectedService) =>
+    `${baseUrl}${DOMAIN_ID}/${asset.assetId}/${ENV_ID}/${asset.targetPlatform}`
 
   const markLoaded = (key) => setLoadedKeys((prev) => ({ ...prev, [key]: true }))
+
+  const imageSamples = useMemo(() => Assets.filter((asset) => !asset.isVideo), [])
+  const videoSamples = useMemo(() => Assets.filter((asset) => asset.isVideo), [])
+
+  const bench = (url) => `${url}?bench=${Date.now()}-${Math.random()}`
+
+  const timeOneImageLoad = (url) =>
+    new Promise((resolve) => {
+      const start = performance.now()
+      const img = new Image()
+      img.onload = () => resolve(performance.now() - start)
+      img.onerror = () => resolve(null)
+      img.src = bench(url)
+    })
+
+  const timeOneVideoLoad = (url) =>
+    new Promise((resolve) => {
+      const start = performance.now()
+      const video = document.createElement('video')
+      video.preload = 'auto'
+      video.muted = true
+      video.oncanplaythrough = () => resolve(performance.now() - start)
+      video.onerror = () => resolve(null)
+      video.src = bench(url)
+    })
+
+  const runBenchmark = async () => {
+    setBenchmark({ status: 'running', results: {} })
+    const results = {}
+    for (const service of SERVICES) {
+      const imageTimings = []
+      for (const asset of imageSamples) {
+        const elapsed = await timeOneImageLoad(assetUrl(asset, service.value))
+        if (elapsed !== null) imageTimings.push(elapsed)
+      }
+      const videoTimings = []
+      for (const asset of videoSamples) {
+        const elapsed = await timeOneVideoLoad(assetUrl(asset, service.value))
+        if (elapsed !== null) videoTimings.push(elapsed)
+      }
+      results[service.value] = { image: imageTimings, video: videoTimings }
+      setBenchmark({ status: 'running', results: { ...results } })
+    }
+    setBenchmark({ status: 'done', results })
+  }
 
   const renderTile = (asset, index) => {
     const key = `${asset.assetId}-${asset.targetPlatform}-${index}`
@@ -82,17 +130,43 @@ export default function Gallery() {
               style={{ opacity: isLoaded ? 1 : 0 }}
             />
           )}
-          {asset.isVideo && <span className={styles.playBadge}>&#9656;</span>}
+          {asset.isVideo && (
+            <span className={styles.playBadge}>
+              <HugeiconsIcon icon={PlayIcon} size={14} />
+            </span>
+          )}
         </div>
         <div className={styles.tileMeta}>
           <span className={styles.tileId}>{asset.assetId}</span>
-          <span className={styles.tilePlatform}>{asset.targetPlatform}</span>
+          <span className={styles.tileMetaPlatform}>{asset.targetPlatform}</span>
         </div>
       </button>
     )
   }
 
   const missingConfig = !ADN_BASE_URL || !DOMAIN_ID || !ENV_ID
+
+  const statsFor = (category) => {
+    const stats = SERVICES.map((service) => {
+      const timings = (benchmark.results[service.value] || {})[category] || []
+      const avg = timings.length ? timings.reduce((a, b) => a + b, 0) / timings.length : null
+      return {
+        service,
+        avg,
+        min: timings.length ? Math.min(...timings) : null,
+        samples: timings.length,
+      }
+    })
+    const validAverages = stats.map((s) => s.avg).filter((avg) => avg !== null)
+    return {
+      stats,
+      slowestAvg: validAverages.length ? Math.max(...validAverages) : null,
+      fastestAvg: validAverages.length ? Math.min(...validAverages) : null,
+    }
+  }
+
+  const imageStats = statsFor('image')
+  const videoStats = statsFor('video')
 
   return (
     <div className={styles.page}>
@@ -123,7 +197,7 @@ export default function Gallery() {
               aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
               title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
             >
-              {theme === 'dark' ? '☀' : '☽'}
+              <HugeiconsIcon icon={theme === 'dark' ? Sun01Icon : Moon02Icon} size={18} />
             </button>
           </div>
         </div>
@@ -137,15 +211,7 @@ export default function Gallery() {
 
         <div className={styles.controls}>
           <div className={styles.searchWrap}>
-            <svg
-              className={styles.searchIcon}
-              viewBox="0 0 24 24"
-              fill="none"
-              aria-hidden="true"
-            >
-              <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
-              <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" strokeWidth="2" />
-            </svg>
+            <HugeiconsIcon icon={Search01Icon} size={16} className={styles.searchIcon} />
             <input
               type="search"
               placeholder="Search by asset or platform"
@@ -168,6 +234,68 @@ export default function Gallery() {
           </div>
         </div>
       </header>
+
+      <section className={styles.perfPanel}>
+        <div className={styles.perfHeader}>
+          <div>
+            <p className={styles.perfTitle}>Service speed</p>
+            <p className={styles.perfHint}>
+              Loads {imageSamples.length} images and {videoSamples.length} videos from each
+              service and times them.
+            </p>
+          </div>
+          <button
+            type="button"
+            className={styles.perfRun}
+            onClick={runBenchmark}
+            disabled={missingConfig || benchmark.status === 'running'}
+          >
+            {benchmark.status === 'running' ? 'Testing...' : 'Run speed test'}
+          </button>
+        </div>
+
+        {benchmark.status !== 'idle' && (
+          <div className={styles.perfCategories}>
+            {[
+              { key: 'image', label: 'Images', data: imageStats },
+              { key: 'video', label: 'Videos', data: videoStats },
+            ].map(({ key, label, data }) => (
+              <div key={key} className={styles.perfCategory}>
+                <p className={styles.perfCategoryLabel}>{label}</p>
+                <div className={styles.perfRows}>
+                  {data.stats.map(({ service, avg, min, samples }) => {
+                    const isFastest =
+                      avg !== null && avg === data.fastestAvg && data.fastestAvg !== data.slowestAvg
+                    const barWidth =
+                      avg !== null && data.slowestAvg ? Math.max(8, (avg / data.slowestAvg) * 100) : 0
+                    return (
+                      <div key={service.value} className={styles.perfRow}>
+                        <div className={styles.perfRowLabel}>
+                          <span>{service.label}</span>
+                          {isFastest && <span className={styles.perfBadge}>Fastest</span>}
+                        </div>
+                        <div className={styles.perfBarTrack}>
+                          <div
+                            className={styles.perfBarFill}
+                            style={{ width: avg !== null ? `${barWidth}%` : '0%' }}
+                          />
+                        </div>
+                        <div className={styles.perfRowValue}>
+                          {avg !== null
+                            ? `${avg.toFixed(0)} ms avg · ${min.toFixed(0)} ms best · ${samples} samples`
+                            : benchmark.status === 'running'
+                            ? 'Testing...'
+                            : 'No successful loads'}
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
 
       <main className={styles.gallery}>
         {missingConfig ? (
@@ -200,7 +328,7 @@ export default function Gallery() {
               onClick={() => setActiveAsset(null)}
               aria-label="Close"
             >
-              &times;
+              <HugeiconsIcon icon={Cancel01Icon} size={16} />
             </button>
             {activeAsset.isVideo ? (
               <video className={styles.lightboxMedia} controls autoPlay>
