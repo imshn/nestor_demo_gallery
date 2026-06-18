@@ -1,10 +1,11 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import styles from './App.module.css'
 import Assets from './Assets.json'
 
 const ADN_BASE_URL = process.env.REACT_APP_ADN_BASE_URL || '';
 const DOMAIN_ID = process.env.REACT_APP_DOMAIN_ID || '';
 const ENV_ID = process.env.REACT_APP_ENV_ID || '';
+const THEME_KEY = 'nestor-gallery-theme'
 
 const SERVICES = [
   { label: 'ADN v1', value: 'https://adn.nestortech.io/api/va/' },
@@ -17,6 +18,16 @@ export default function Gallery() {
   const [selectedService, setSelectedService] = useState(ADN_BASE_URL)
   const [activeAsset, setActiveAsset] = useState(null)
   const [loadedKeys, setLoadedKeys] = useState({})
+  const [theme, setTheme] = useState(() => {
+    const stored = window.localStorage.getItem(THEME_KEY)
+    if (stored) return stored
+    return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'
+  })
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme)
+    window.localStorage.setItem(THEME_KEY, theme)
+  }, [theme])
 
   const platforms = useMemo(
     () => ['all', ...new Set(Assets.map((asset) => asset.targetPlatform))],
@@ -90,20 +101,31 @@ export default function Gallery() {
       <header className={styles.header}>
         <div className={styles.headerTop}>
           <span className={styles.eyebrow}>Delivery network archive</span>
-          <select
-            className={styles.serviceSelector}
-            value={selectedService}
-            onChange={(e) => setSelectedService(e.target.value)}
-          >
-            <option value="" disabled>
-              Select a service
-            </option>
-            {SERVICES.map((service) => (
-              <option key={service.value} value={service.value}>
-                {service.label}
+          <div className={styles.headerActions}>
+            <select
+              className={styles.serviceSelector}
+              value={selectedService}
+              onChange={(e) => setSelectedService(e.target.value)}
+            >
+              <option value="" disabled>
+                Select a service
               </option>
-            ))}
-          </select>
+              {SERVICES.map((service) => (
+                <option key={service.value} value={service.value}>
+                  {service.label}
+                </option>
+              ))}
+            </select>
+            <button
+              type="button"
+              className={styles.themeToggle}
+              onClick={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))}
+              aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+              title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+            >
+              {theme === 'dark' ? '☀' : '☽'}
+            </button>
+          </div>
         </div>
 
         <h1 className={styles.title}>The Gallery</h1>
