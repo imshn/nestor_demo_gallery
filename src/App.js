@@ -17,7 +17,7 @@ const SERVICES = [
 export default function Gallery() {
   const [searchQuery, setSearchQuery] = useState('')
   const [platformFilter, setPlatformFilter] = useState('all')
-  const [selectedService, setSelectedService] = useState(ADN_BASE_URL)
+  const [selectedService, setSelectedService] = useState(SERVICES[0].value)
   const [activeAsset, setActiveAsset] = useState(null)
   const [loadedKeys, setLoadedKeys] = useState({})
   const [benchmark, setBenchmark] = useState({ status: 'idle', results: {} })
@@ -193,7 +193,6 @@ export default function Gallery() {
 
       <header className={styles.header}>
         <div className={styles.headerTop}>
-          <span className={styles.eyebrow}>Delivery network archive</span>
           <div className={styles.headerActions}>
             <select
               className={styles.serviceSelector}
