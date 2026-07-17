@@ -7,7 +7,7 @@ import Assets from './Assets.json'
 const ADN_BASE_URL = process.env.REACT_APP_ADN_BASE_URL || '';
 const DOMAIN_ID = process.env.REACT_APP_DOMAIN_ID || '';
 const ENV_ID = process.env.REACT_APP_ENV_ID || '';
-const THEME_KEY = 'nestor-gallery-theme'
+const THEME_KEY = 'umber-gallery-theme'
 
 const ADN_SERVICE_URL = 'https://adn.umbercloud.io/api/va/'
 
@@ -197,12 +197,12 @@ export default function Gallery() {
         <p className={styles.subtitle}>
           {ENV_ID ? (
             <>
-              Every render Nestor has delivered across environment{' '}
+              Every render Umber has delivered across environment{' '}
               <span className={styles.tag}>{ENV_ID}</span>, organized by platform and ready to
               inspect.
             </>
           ) : (
-            'Every render Nestor has delivered, organized by platform and ready to inspect.'
+            'Every render Umber has delivered, organized by platform and ready to inspect.'
           )}
         </p>
 

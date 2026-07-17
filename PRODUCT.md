@@ -6,14 +6,14 @@ product
 
 ## Users
 
-Two audiences in roughly equal measure: internal Nestor engineers/QA verifying that the right
+Two audiences in roughly equal measure: internal Umber engineers/QA verifying that the right
 asset render shows up per platform (android, ios, web, generic), and external clients or
-stakeholders viewing the same gallery to evaluate Nestor's delivery network. Both groups need to
+stakeholders viewing the same gallery to evaluate Umber's delivery network. Both groups need to
 trust what they're looking at without reading documentation first.
 
 ## Product Purpose
 
-A working gallery over Nestor's Asset Delivery Network (ADN) that lets
+A working gallery over Umber's Asset Delivery Network (ADN) that lets
 someone spot-check that an asset renders correctly across platforms. Success looks like
 a viewer trusting the gallery enough to make a platform decision from it directly,
 without needing to cross-check elsewhere.

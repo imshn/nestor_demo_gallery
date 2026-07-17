@@ -1,6 +1,6 @@
 ---
-name: Nestor Gallery
-description: A curated archive viewer for Nestor's Asset Delivery Network, comparing renders and service speed across platforms.
+name: Umber Gallery
+description: A curated archive viewer for Umber's Asset Delivery Network, comparing renders and service speed across platforms.
 colors:
   warm-amber: "#c98a4b"
   accent-ink: "#1a1310"
@@ -63,13 +63,13 @@ components:
     rounded: "{rounded.lg}"
 ---
 
-# Design System: Nestor Gallery
+# Design System: Umber Gallery
 
 ## 1. Overview
 
 **Creative North Star: "The Amber Archive"**
 
-This system documents a curated archive, not a dashboard. Every render Nestor's delivery
+This system documents a curated archive, not a dashboard. Every render Umber's delivery
 network has produced lives behind a warm, low-lit interface: an off-black canvas, one amber
 accent used sparingly, and an editorial display face (Fraunces) reserved for the single page
 title. The bento gallery is the centerpiece; everything else (search, filters, the speed test

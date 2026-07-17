@@ -1,71 +1,176 @@
 {
   "schemaVersion": 2,
   "generatedAt": "2026-06-18T00:00:00.000Z",
-  "title": "Design System: Nestor Gallery",
+  "title": "Design System: Umber Gallery",
   "extensions": {
     "colorMeta": {
       "warm-amber": {
         "role": "primary",
         "displayName": "Warm Amber",
         "canonical": "#c98a4b",
-        "tonalRamp": ["#2a1c0f", "#4a3119", "#6e4924", "#93632f", "#b97d3c", "#c98a4b", "#dba874", "#efd2b3"]
+        "tonalRamp": [
+          "#2a1c0f",
+          "#4a3119",
+          "#6e4924",
+          "#93632f",
+          "#b97d3c",
+          "#c98a4b",
+          "#dba874",
+          "#efd2b3"
+        ]
       },
       "accent-ink": {
         "role": "on-primary",
         "displayName": "Accent Ink",
         "canonical": "#1a1310",
-        "tonalRamp": ["#0a0807", "#1a1310", "#2c221c", "#403229", "#564537", "#6d5a47", "#897a6a", "#a99d91"]
+        "tonalRamp": [
+          "#0a0807",
+          "#1a1310",
+          "#2c221c",
+          "#403229",
+          "#564537",
+          "#6d5a47",
+          "#897a6a",
+          "#a99d91"
+        ]
       },
       "bg": {
         "role": "neutral-ground",
         "displayName": "Off-Black Ground",
         "canonical": "#0b0a09",
-        "tonalRamp": ["#0b0a09", "#16140f", "#231f18", "#322c22", "#433b2e", "#564c3c", "#6c604c", "#85765f"]
+        "tonalRamp": [
+          "#0b0a09",
+          "#16140f",
+          "#231f18",
+          "#322c22",
+          "#433b2e",
+          "#564c3c",
+          "#6c604c",
+          "#85765f"
+        ]
       },
       "bg-raised": {
         "role": "neutral-surface",
         "displayName": "Raised Surface",
         "canonical": "#141210",
-        "tonalRamp": ["#0b0a09", "#141210", "#211d18", "#312b23", "#433b30", "#574c3e", "#6d604e", "#857562"]
+        "tonalRamp": [
+          "#0b0a09",
+          "#141210",
+          "#211d18",
+          "#312b23",
+          "#433b30",
+          "#574c3e",
+          "#6d604e",
+          "#857562"
+        ]
       },
       "ink": {
         "role": "neutral-text",
         "displayName": "Ink",
         "canonical": "#ece8e3",
-        "tonalRamp": ["#3a3631", "#544e46", "#71695d", "#908576", "#aea090", "#cabfae", "#e3dbcd", "#ece8e3"]
+        "tonalRamp": [
+          "#3a3631",
+          "#544e46",
+          "#71695d",
+          "#908576",
+          "#aea090",
+          "#cabfae",
+          "#e3dbcd",
+          "#ece8e3"
+        ]
       },
       "ink-dim": {
         "role": "neutral-text-muted",
         "displayName": "Ink Dim",
         "canonical": "#9b958c",
-        "tonalRamp": ["#2c2924", "#433f38", "#5b554c", "#746d62", "#8e857a", "#9b958c", "#b3ada3", "#cbc6bd"]
+        "tonalRamp": [
+          "#2c2924",
+          "#433f38",
+          "#5b554c",
+          "#746d62",
+          "#8e857a",
+          "#9b958c",
+          "#b3ada3",
+          "#cbc6bd"
+        ]
       },
       "line": {
         "role": "border",
         "displayName": "Hairline",
         "canonical": "rgba(255,255,255,0.08)",
-        "tonalRamp": ["rgba(255,255,255,0.02)", "rgba(255,255,255,0.04)", "rgba(255,255,255,0.06)", "rgba(255,255,255,0.08)", "rgba(255,255,255,0.12)", "rgba(255,255,255,0.16)", "rgba(255,255,255,0.24)", "rgba(255,255,255,0.32)"]
+        "tonalRamp": [
+          "rgba(255,255,255,0.02)",
+          "rgba(255,255,255,0.04)",
+          "rgba(255,255,255,0.06)",
+          "rgba(255,255,255,0.08)",
+          "rgba(255,255,255,0.12)",
+          "rgba(255,255,255,0.16)",
+          "rgba(255,255,255,0.24)",
+          "rgba(255,255,255,0.32)"
+        ]
       }
     },
     "typographyMeta": {
-      "display": { "displayName": "Display", "purpose": "The single page <h1> only. Never reused for smaller headings." },
-      "body": { "displayName": "Body", "purpose": "Subtitle copy, lightbox metadata, general prose." },
-      "label": { "displayName": "Label", "purpose": "Eyebrow, platform tags, pill filters, perf-panel category headers." }
+      "display": {
+        "displayName": "Display",
+        "purpose": "The single page <h1> only. Never reused for smaller headings."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Subtitle copy, lightbox metadata, general prose."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Eyebrow, platform tags, pill filters, perf-panel category headers."
+      }
     },
     "shadows": [
-      { "name": "resting", "value": "0 10px 24px -18px var(--shadow-resting)", "purpose": "Default state for tiles and panels per the Always-Lit Rule. Always present, never purely flat." },
-      { "name": "lifted", "value": "0 18px 36px -18px var(--shadow)", "purpose": "Hover/focus state for gallery tiles, paired with translateY(-3px) and a 4% media zoom." },
-      { "name": "modal", "value": "0 24px 60px -24px var(--shadow)", "purpose": "The lightbox surface, always rendered as clearly elevated above the page." }
+      {
+        "name": "resting",
+        "value": "0 10px 24px -18px var(--shadow-resting)",
+        "purpose": "Default state for tiles and panels per the Always-Lit Rule. Always present, never purely flat."
+      },
+      {
+        "name": "lifted",
+        "value": "0 18px 36px -18px var(--shadow)",
+        "purpose": "Hover/focus state for gallery tiles, paired with translateY(-3px) and a 4% media zoom."
+      },
+      {
+        "name": "modal",
+        "value": "0 24px 60px -24px var(--shadow)",
+        "purpose": "The lightbox surface, always rendered as clearly elevated above the page."
+      }
     ],
     "motion": [
-      { "name": "tile-hover", "value": "transform 260ms ease, box-shadow 260ms ease", "purpose": "Gallery tile lift and shadow deepen on hover/focus." },
-      { "name": "media-zoom", "value": "transform 400ms ease", "purpose": "4% scale zoom on tile media on hover, paired with the tile lift." },
-      { "name": "control-transition", "value": "border-color 200-220ms ease, color 200ms ease, background 200ms ease", "purpose": "Pills, inputs, and buttons on hover/focus." }
+      {
+        "name": "tile-hover",
+        "value": "transform 260ms ease, box-shadow 260ms ease",
+        "purpose": "Gallery tile lift and shadow deepen on hover/focus."
+      },
+      {
+        "name": "media-zoom",
+        "value": "transform 400ms ease",
+        "purpose": "4% scale zoom on tile media on hover, paired with the tile lift."
+      },
+      {
+        "name": "control-transition",
+        "value": "border-color 200-220ms ease, color 200ms ease, background 200ms ease",
+        "purpose": "Pills, inputs, and buttons on hover/focus."
+      }
     ],
     "breakpoints": [
-      { "name": "md", "value": "1100px" },
-      { "name": "sm", "value": "760px" },
-      { "name": "xs", "value": "520px" }
+      {
+        "name": "md",
+        "value": "1100px"
+      },
+      {
+        "name": "sm",
+        "value": "760px"
+      },
+      {
+        "name": "xs",
+        "value": "520px"
+      }
     ]
   },
   "components": [
@@ -104,7 +209,7 @@
   ],
   "narrative": {
     "northStar": "The Amber Archive",
-    "overview": "This system documents a curated archive, not a dashboard. Every render Nestor's delivery network has produced lives behind a warm, low-lit interface: an off-black canvas, one amber accent used sparingly, and an editorial display face (Fraunces) reserved for the single page title. The bento gallery is the centerpiece; everything else (search, filters, the speed test panel) is deliberately quiet so the renders stay the loudest thing on screen. This explicitly rejects the generic SaaS dashboard look: no blue/purple gradient admin chrome, no identical equal-sized card grids, no cream/beige \"safe\" body background, no gradient text, no uppercase tracked eyebrows scattered above every section.",
+    "overview": "This system documents a curated archive, not a dashboard. Every render Umber's delivery network has produced lives behind a warm, low-lit interface: an off-black canvas, one amber accent used sparingly, and an editorial display face (Fraunces) reserved for the single page title. The bento gallery is the centerpiece; everything else (search, filters, the speed test panel) is deliberately quiet so the renders stay the loudest thing on screen. This explicitly rejects the generic SaaS dashboard look: no blue/purple gradient admin chrome, no identical equal-sized card grids, no cream/beige \"safe\" body background, no gradient text, no uppercase tracked eyebrows scattered above every section.",
     "keyCharacteristics": [
       "Off-black/off-white dual surface, never pure #000 or pure #fff.",
       "One accent (Warm Amber) carries all emphasis; no secondary or tertiary color roles.",
@@ -113,10 +218,26 @@
       "Persistent, layered elevation: raised surfaces always carry a resting shadow, not just on hover."
     ],
     "rules": [
-      { "name": "The One Accent Rule", "body": "Warm Amber is the only saturated color anywhere in the interface. If a second color is ever needed, desaturate it into the neutral ramp before reaching for a new hue.", "section": "colors" },
-      { "name": "The Dual Surface Rule", "body": "Dark and light are both fully specified token sets, swapped via [data-theme='light'], not a dark theme with light values bolted on as an afterthought.", "section": "colors" },
-      { "name": "The One Serif Rule", "body": "Fraunces appears in exactly one place: the page <h1>. Every other text element uses Outfit.", "section": "typography" },
-      { "name": "The Always-Lit Rule", "body": "Nothing on this surface is perfectly flat. Tiles, panels, and modals carry a resting shadow before any interaction occurs; hover/focus deepen it, they don't introduce it from nothing.", "section": "elevation" }
+      {
+        "name": "The One Accent Rule",
+        "body": "Warm Amber is the only saturated color anywhere in the interface. If a second color is ever needed, desaturate it into the neutral ramp before reaching for a new hue.",
+        "section": "colors"
+      },
+      {
+        "name": "The Dual Surface Rule",
+        "body": "Dark and light are both fully specified token sets, swapped via [data-theme='light'], not a dark theme with light values bolted on as an afterthought.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Serif Rule",
+        "body": "Fraunces appears in exactly one place: the page <h1>. Every other text element uses Outfit.",
+        "section": "typography"
+      },
+      {
+        "name": "The Always-Lit Rule",
+        "body": "Nothing on this surface is perfectly flat. Tiles, panels, and modals carry a resting shadow before any interaction occurs; hover/focus deepen it, they don't introduce it from nothing.",
+        "section": "elevation"
+      }
     ],
     "dos": [
       "Do keep Warm Amber to a single accent role; every other color stays in the neutral ramp.",
