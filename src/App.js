@@ -9,15 +9,12 @@ const DOMAIN_ID = process.env.REACT_APP_DOMAIN_ID || '';
 const ENV_ID = process.env.REACT_APP_ENV_ID || '';
 const THEME_KEY = 'nestor-gallery-theme'
 
-const SERVICES = [
-  { label: 'ADN v1', value: 'https://adn.nestortech.io/api/va/' },
-  { label: 'ADN delta v2', value: 'https://adn-v2-delta.vercel.app/api/va/' },
-]
+const ADN_SERVICE_URL = 'https://adn.umbercloud.io/api/va/'
 
 export default function Gallery() {
   const [searchQuery, setSearchQuery] = useState('')
   const [platformFilter, setPlatformFilter] = useState('all')
-  const [selectedService, setSelectedService] = useState(SERVICES[0].value)
+  const selectedService = ADN_SERVICE_URL
   const [activeAsset, setActiveAsset] = useState(null)
   const [loadedKeys, setLoadedKeys] = useState({})
   const [benchmark, setBenchmark] = useState({ status: 'idle', results: {} })
@@ -93,22 +90,19 @@ export default function Gallery() {
 
   const runBenchmark = async () => {
     setBenchmark({ status: 'running', results: {} })
-    const results = {}
-    for (const service of SERVICES) {
-      const imageTimings = []
-      for (const asset of imageSamples) {
-        const elapsed = await timeOneImageLoad(assetUrl(asset, service.value))
-        if (elapsed !== null) imageTimings.push(elapsed)
-      }
-      const videoTimings = []
-      for (const asset of videoSamples) {
-        const elapsed = await timeOneVideoLoad(assetUrl(asset, service.value))
-        if (elapsed !== null) videoTimings.push(elapsed)
-      }
-      results[service.value] = { image: imageTimings, video: videoTimings }
-      setBenchmark({ status: 'running', results: { ...results } })
+    const imageTimings = []
+    for (const asset of imageSamples) {
+      const elapsed = await timeOneImageLoad(assetUrl(asset, ADN_SERVICE_URL))
+      if (elapsed !== null) imageTimings.push(elapsed)
+      setBenchmark({ status: 'running', results: { image: imageTimings, video: [] } })
     }
-    setBenchmark({ status: 'done', results })
+    const videoTimings = []
+    for (const asset of videoSamples) {
+      const elapsed = await timeOneVideoLoad(assetUrl(asset, ADN_SERVICE_URL))
+      if (elapsed !== null) videoTimings.push(elapsed)
+      setBenchmark({ status: 'running', results: { image: imageTimings, video: videoTimings } })
+    }
+    setBenchmark({ status: 'done', results: { image: imageTimings, video: videoTimings } })
   }
 
   const renderTile = (asset, index) => {
@@ -166,21 +160,12 @@ export default function Gallery() {
   const missingConfig = !ADN_BASE_URL || !DOMAIN_ID || !ENV_ID
 
   const statsFor = (category) => {
-    const stats = SERVICES.map((service) => {
-      const timings = (benchmark.results[service.value] || {})[category] || []
-      const avg = timings.length ? timings.reduce((a, b) => a + b, 0) / timings.length : null
-      return {
-        service,
-        avg,
-        min: timings.length ? Math.min(...timings) : null,
-        samples: timings.length,
-      }
-    })
-    const validAverages = stats.map((s) => s.avg).filter((avg) => avg !== null)
+    const timings = benchmark.results[category] || []
+    const avg = timings.length ? timings.reduce((a, b) => a + b, 0) / timings.length : null
     return {
-      stats,
-      slowestAvg: validAverages.length ? Math.max(...validAverages) : null,
-      fastestAvg: validAverages.length ? Math.min(...validAverages) : null,
+      avg,
+      min: timings.length ? Math.min(...timings) : null,
+      samples: timings.length,
     }
   }
 
@@ -194,21 +179,8 @@ export default function Gallery() {
       <header className={styles.header}>
         <div className={styles.headerTop}>
           <div className={styles.headerActions}>
-            <select
-              className={styles.serviceSelector}
-              value={selectedService}
-              onChange={(e) => setSelectedService(e.target.value)}
-              aria-label="Select delivery service"
-            >
-              <option value="" disabled>
-                Select a service
-              </option>
-              {SERVICES.map((service) => (
-                <option key={service.value} value={service.value}>
-                  {service.label}
-                </option>
-              ))}
-            </select>
+            <span className={styles.serviceLabel}>ADN v1</span>
+
             <button
               type="button"
               className={styles.themeToggle}
@@ -259,6 +231,8 @@ export default function Gallery() {
               </button>
             ))}
           </div>
+
+          <span className={styles.assetCount}>{filteredAssets.length} assets</span>
         </div>
       </header>
 
@@ -267,7 +241,7 @@ export default function Gallery() {
           <div>
             <h2 className={styles.perfTitle}>Service speed</h2>
             <p className={styles.perfHint}>
-              Loads {imageSamples.length} images and {videoSamples.length} videos from each
+              Loads {imageSamples.length} images and {videoSamples.length} videos from the
               service and times them.
             </p>
           </div>
@@ -290,33 +264,24 @@ export default function Gallery() {
               <div key={key} className={styles.perfCategory}>
                 <h3 className={styles.perfCategoryLabel}>{label}</h3>
                 <div className={styles.perfRows}>
-                  {data.stats.map(({ service, avg, min, samples }) => {
-                    const isFastest =
-                      avg !== null && avg === data.fastestAvg && data.fastestAvg !== data.slowestAvg
-                    const barWidth =
-                      avg !== null && data.slowestAvg ? Math.max(8, (avg / data.slowestAvg) * 100) : 0
-                    return (
-                      <div key={service.value} className={styles.perfRow}>
-                        <div className={styles.perfRowLabel}>
-                          <span>{service.label}</span>
-                          {isFastest && <span className={styles.perfBadge}>Fastest</span>}
-                        </div>
-                        <div className={styles.perfBarTrack}>
-                          <div
-                            className={styles.perfBarFill}
-                            style={{ width: avg !== null ? `${barWidth}%` : '0%' }}
-                          />
-                        </div>
-                        <div className={styles.perfRowValue}>
-                          {avg !== null
-                            ? `${avg.toFixed(0)} ms avg · ${min.toFixed(0)} ms best · ${samples} samples`
-                            : benchmark.status === 'running'
-                            ? 'Testing...'
-                            : 'No successful loads'}
-                        </div>
-                      </div>
-                    )
-                  })}
+                  <div className={styles.perfRow}>
+                    <div className={styles.perfRowLabel}>
+                      <span>ADN v1</span>
+                    </div>
+                    <div className={styles.perfBarTrack}>
+                      <div
+                        className={styles.perfBarFill}
+                        style={{ width: data.avg !== null ? '100%' : '0%' }}
+                      />
+                    </div>
+                    <div className={styles.perfRowValue}>
+                      {data.avg !== null
+                        ? `${data.avg.toFixed(0)} ms avg · ${data.min.toFixed(0)} ms best · ${data.samples} samples`
+                        : benchmark.status === 'running'
+                        ? 'Testing...'
+                        : 'No successful loads'}
+                    </div>
+                  </div>
                 </div>
               </div>
             ))}

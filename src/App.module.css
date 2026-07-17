@@ -36,6 +36,13 @@
   margin-left: auto;
 }
 
+.serviceLabel {
+  font-size: 0.9rem;
+  /* font-weight: 500; */
+  color: var(--ink-dim);
+  padding-right: 8px;
+}
+
 .themeToggle {
   display: flex;
   align-items: center;
@@ -76,6 +83,15 @@
   letter-spacing: -0.01em;
   margin: 0 0 14px;
   color: var(--ink);
+}
+
+.assetCount {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--ink-dim);
+  letter-spacing: normal;
+  margin-left: auto;
 }
 
 .subtitle {

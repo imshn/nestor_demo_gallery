@@ -13,10 +13,9 @@ trust what they're looking at without reading documentation first.
 
 ## Product Purpose
 
-A working gallery over Nestor's Asset Delivery Network (ADN) that does two jobs equally: lets
-someone spot-check that an asset renders correctly across platforms, and lets them compare load
-performance between ADN v1 and ADN delta v2 to judge which service is faster. Success looks like
-a viewer trusting the gallery enough to make a platform or service decision from it directly,
+A working gallery over Nestor's Asset Delivery Network (ADN) that lets
+someone spot-check that an asset renders correctly across platforms. Success looks like
+a viewer trusting the gallery enough to make a platform decision from it directly,
 without needing to cross-check elsewhere.
 
 ## Brand Personality
