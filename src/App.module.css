@@ -215,120 +215,113 @@
   border-color: var(--accent);
 }
 
-.collectionCard {
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  background: var(--bg-raised);
-  padding: 24px;
-  margin-bottom: 40px;
-  box-shadow: 0 10px 28px -20px var(--shadow-resting);
+.collectionTile {
+  position: relative;
+  background: var(--bg);
 }
 
-.collectionHeader {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 20px;
-  flex-wrap: wrap;
-  margin-bottom: 18px;
-}
-
-.collectionForm {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.collectionForm .searchInput {
-  width: 220px;
-  padding: 9px 16px;
-}
-
-.collectionStage {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.collectionArrow {
-  flex-shrink: 0;
+.collectionTilePlaceholder {
+  position: absolute;
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 1px solid var(--line);
-  background: var(--bg);
-  color: var(--ink);
-  cursor: pointer;
-  transition: border-color 200ms ease, opacity 200ms ease;
+  font-size: 0.82rem;
+  color: var(--ink-dim);
 }
 
-.collectionArrow:hover:not(:disabled) {
-  border-color: var(--line-strong);
-}
-
-.collectionArrow:disabled {
-  opacity: 0.35;
-  cursor: not-allowed;
-}
-
-.collectionMedia {
-  position: relative;
-  flex: 1;
-  display: block;
-  height: 360px;
+.collectionTileMedia {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 0;
   border: none;
-  border-radius: 14px;
-  overflow: hidden;
-  cursor: pointer;
   background: var(--bg);
+  cursor: pointer;
+}
+
+.collectionMediaFit {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 
 .collectionAnchorBadge {
   position: absolute;
-  top: 12px;
-  left: 12px;
-  font-size: 0.68rem;
+  top: 10px;
+  left: 10px;
+  font-size: 0.64rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--accent-ink);
   background: var(--accent);
   border-radius: 999px;
-  padding: 4px 10px;
+  padding: 3px 9px;
 }
 
-.collectionThumbs {
+.collectionArrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
   display: flex;
-  gap: 10px;
-  margin-top: 14px;
-  overflow-x: auto;
-  padding-bottom: 4px;
-}
-
-.collectionThumb {
-  flex-shrink: 0;
-  width: 64px;
-  height: 64px;
-  padding: 0;
-  border: 2px solid transparent;
-  border-radius: 10px;
-  overflow: hidden;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(11, 10, 9, 0.6);
+  color: #fff;
   cursor: pointer;
-  background: var(--bg);
-  opacity: 0.6;
-  transition: opacity 200ms ease, border-color 200ms ease;
+  transition: background 200ms ease;
 }
 
-.collectionThumb:hover {
-  opacity: 0.9;
+.collectionArrow:hover {
+  background: rgba(11, 10, 9, 0.85);
 }
 
-.collectionThumbActive {
-  opacity: 1;
-  border-color: var(--accent);
+.collectionArrowLeft {
+  left: 10px;
+}
+
+.collectionArrowRight {
+  right: 10px;
+}
+
+.collectionDots {
+  position: absolute;
+  bottom: 44px;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.collectionDot {
+  width: 6px;
+  height: 6px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: background 200ms ease, transform 200ms ease;
+}
+
+.collectionDot:hover {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.collectionDotActive {
+  background: #fff;
+  transform: scale(1.3);
 }
 
 .perfPanel {
