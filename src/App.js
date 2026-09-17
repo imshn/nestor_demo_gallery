@@ -9,15 +9,21 @@ const DOMAIN_ID = process.env.REACT_APP_DOMAIN_ID || '';
 const ENV_ID = process.env.REACT_APP_ENV_ID || '';
 const THEME_KEY = 'umber-gallery-theme'
 
-const ADN_SERVICE_URL = 'https://adn.umbercloud.io/api/va/'
+// e.g. "https://teal-vicuna-9538.umberadn.com/api/va/" -> "https://teal-vicuna-9538.umberadn.com/api/"
+const ADN_API_ROOT = ADN_BASE_URL.replace(/va\/?$/, '')
+const collectionUrl = (collectionId) =>
+  `${ADN_API_ROOT}vc/${DOMAIN_ID}/${collectionId}/${ENV_ID}`
+const collectionMediaUrl = (downloadUrl) => `${ADN_API_ROOT}vi${downloadUrl}`
 
 export default function Gallery() {
   const [searchQuery, setSearchQuery] = useState('')
   const [platformFilter, setPlatformFilter] = useState('all')
-  const selectedService = ADN_SERVICE_URL
+  const selectedService = ADN_BASE_URL
   const [activeAsset, setActiveAsset] = useState(null)
   const [loadedKeys, setLoadedKeys] = useState({})
   const [benchmark, setBenchmark] = useState({ status: 'idle', results: {} })
+  const [collectionInput, setCollectionInput] = useState('')
+  const [collectionState, setCollectionState] = useState({ status: 'idle', id: null, items: [] })
   const [theme, setTheme] = useState(() => {
     const stored = window.localStorage.getItem(THEME_KEY)
     if (stored) return stored
@@ -92,22 +98,65 @@ export default function Gallery() {
     setBenchmark({ status: 'running', results: {} })
     const imageTimings = []
     for (const asset of imageSamples) {
-      const elapsed = await timeOneImageLoad(assetUrl(asset, ADN_SERVICE_URL))
+      const elapsed = await timeOneImageLoad(assetUrl(asset))
       if (elapsed !== null) imageTimings.push(elapsed)
       setBenchmark({ status: 'running', results: { image: imageTimings, video: [] } })
     }
     const videoTimings = []
     for (const asset of videoSamples) {
-      const elapsed = await timeOneVideoLoad(assetUrl(asset, ADN_SERVICE_URL))
+      const elapsed = await timeOneVideoLoad(assetUrl(asset))
       if (elapsed !== null) videoTimings.push(elapsed)
       setBenchmark({ status: 'running', results: { image: imageTimings, video: videoTimings } })
     }
     setBenchmark({ status: 'done', results: { image: imageTimings, video: videoTimings } })
   }
 
-  const renderTile = (asset, index) => {
-    const key = `${asset.assetId}-${asset.targetPlatform}-${index}`
-    const url = assetUrl(asset)
+  const loadCollection = async (e) => {
+    e.preventDefault()
+    const collectionId = collectionInput.trim()
+    if (!collectionId) return
+    setCollectionState({ status: 'loading', id: collectionId, items: [] })
+    try {
+      const res = await fetch(collectionUrl(collectionId))
+      if (!res.ok) throw new Error(`Request failed with ${res.status}`)
+      const data = await res.json()
+      const items = (data.assetItemUrls || [])
+        .filter((item) => item.mimetype && (item.mimetype.startsWith('image/') || item.mimetype.startsWith('video/')))
+        .map((item) => ({
+          assetItemId: item.assetItemId,
+          name: item.assetItemName || item.assetItemId,
+          url: collectionMediaUrl(item.downloadUrl),
+          isVideo: item.mimetype.startsWith('video/'),
+        }))
+      setCollectionState({ status: items.length ? 'done' : 'empty', id: collectionId, items })
+    } catch (err) {
+      setCollectionState({ status: 'error', id: collectionId, items: [], error: err.message })
+    }
+  }
+
+  const galleryTiles = useMemo(
+    () => [
+      ...filteredAssets.map((asset, index) => ({
+        key: `${asset.assetId}-${asset.targetPlatform}-${index}`,
+        assetId: asset.assetId,
+        targetPlatform: asset.targetPlatform,
+        isVideo: asset.isVideo,
+        url: assetUrl(asset),
+      })),
+      ...collectionState.items.map((item, index) => ({
+        key: `collection-${collectionState.id}-${item.assetItemId || index}`,
+        assetId: item.name,
+        targetPlatform: collectionState.id,
+        isVideo: item.isVideo,
+        url: item.url,
+      })),
+    ],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [filteredAssets, collectionState]
+  )
+
+  const renderTile = (tile) => {
+    const { key, url } = tile
     const isLoaded = !!loadedKeys[key]
 
     return (
@@ -116,13 +165,13 @@ export default function Gallery() {
         className={styles.tile}
         onClick={(e) => {
           lastFocusedTileRef.current = e.currentTarget
-          setActiveAsset({ ...asset, url })
+          setActiveAsset({ ...tile, url })
         }}
-        aria-label={`Open ${asset.assetId}, ${asset.targetPlatform}`}
+        aria-label={`Open ${tile.assetId}, ${tile.targetPlatform}`}
       >
         <div className={styles.tileMedia}>
           {!isLoaded && <div className={styles.tileSkeleton} />}
-          {asset.isVideo ? (
+          {tile.isVideo ? (
             <video
               className={styles.media}
               muted
@@ -137,21 +186,21 @@ export default function Gallery() {
             <img
               className={styles.media}
               src={url}
-              alt={asset.assetId}
+              alt={tile.assetId}
               loading="lazy"
               onLoad={() => markLoaded(key)}
               style={{ opacity: isLoaded ? 1 : 0 }}
             />
           )}
-          {asset.isVideo && (
+          {tile.isVideo && (
             <span className={styles.playBadge}>
               <HugeiconsIcon icon={PlayIcon} size={14} />
             </span>
           )}
         </div>
         <div className={styles.tileMeta}>
-          <span className={styles.tileId}>{asset.assetId}</span>
-          <span className={styles.tileMetaPlatform}>{asset.targetPlatform}</span>
+          <span className={styles.tileId}>{tile.assetId}</span>
+          <span className={styles.tileMetaPlatform}>{tile.targetPlatform}</span>
         </div>
       </button>
     )
@@ -232,8 +281,28 @@ export default function Gallery() {
             ))}
           </div>
 
-          <span className={styles.assetCount}>{filteredAssets.length} assets</span>
+          <form className={styles.searchWrap} onSubmit={loadCollection} style={{ maxWidth: 260 }}>
+            <HugeiconsIcon icon={Search01Icon} size={16} className={styles.searchIcon} />
+            <input
+              type="text"
+              placeholder="Load collection by ID"
+              aria-label="Collection ID"
+              className={styles.searchInput}
+              value={collectionInput}
+              onChange={(e) => setCollectionInput(e.target.value)}
+            />
+          </form>
+
+          <span className={styles.assetCount}>{galleryTiles.length} assets</span>
         </div>
+        {collectionState.status === 'error' && (
+          <p className={styles.perfHint} role="alert">
+            Couldn't load "{collectionState.id}": {collectionState.error}
+          </p>
+        )}
+        {collectionState.status === 'empty' && (
+          <p className={styles.perfHint}>No image/video assets found in "{collectionState.id}".</p>
+        )}
       </header>
 
       <section className={styles.perfPanel}>
@@ -297,13 +366,13 @@ export default function Gallery() {
               Set REACT_APP_ADN_BASE_URL, REACT_APP_DOMAIN_ID and REACT_APP_ENV_ID to load assets.
             </p>
           </div>
-        ) : filteredAssets.length === 0 ? (
+        ) : galleryTiles.length === 0 ? (
           <div className={styles.emptyState}>
             <h2 className={styles.emptyTitle}>No matches</h2>
             <p className={styles.emptyBody}>Try a different search term or platform.</p>
           </div>
         ) : (
-          filteredAssets.map(renderTile)
+          galleryTiles.map(renderTile)
         )}
       </main>
 

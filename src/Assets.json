@@ -1,5 +1,9 @@
 [
-	
+
+	{
+		"assetId": "headphone-blue_1",
+		"targetPlatform": "generic"
+	},
 	{
 		"assetId": "asset1",
 		"targetPlatform": "android"
