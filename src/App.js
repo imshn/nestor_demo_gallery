@@ -1,6 +1,14 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState, useCallback } from 'react'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { Sun01Icon, Moon02Icon, Cancel01Icon, PlayIcon, Search01Icon } from '@hugeicons/core-free-icons'
+import {
+  Sun01Icon,
+  Moon02Icon,
+  Cancel01Icon,
+  PlayIcon,
+  Search01Icon,
+  ArrowLeft01Icon,
+  ArrowRight01Icon,
+} from '@hugeicons/core-free-icons'
 import styles from './App.module.css'
 import Assets from './Assets.json'
 
@@ -14,6 +22,24 @@ const ADN_API_ROOT = ADN_BASE_URL.replace(/va\/?$/, '')
 const collectionUrl = (collectionId) =>
   `${ADN_API_ROOT}vc/${DOMAIN_ID}/${collectionId}/${ENV_ID}`
 const collectionMediaUrl = (downloadUrl) => `${ADN_API_ROOT}vi${downloadUrl}`
+const COLLECTION_POLL_MS = 8000
+
+// Anchor asset first, then the rest of the collection in API order
+const collectionItemsFromData = (data) => {
+  const isMedia = (item) =>
+    item.mimetype && (item.mimetype.startsWith('image/') || item.mimetype.startsWith('video/'))
+  const toItem = (item) => ({
+    assetItemId: item.assetItemId,
+    url: collectionMediaUrl(item.downloadUrl),
+    isVideo: item.mimetype.startsWith('video/'),
+  })
+  const all = (data.assetItemUrls || []).filter(isMedia)
+  const anchorId = data.anchorAsset && data.anchorAsset.assetItemId
+  const ordered = anchorId
+    ? [...all.filter((i) => i.assetItemId === anchorId), ...all.filter((i) => i.assetItemId !== anchorId)]
+    : all
+  return ordered.map(toItem)
+}
 
 export default function Gallery() {
   const [searchQuery, setSearchQuery] = useState('')
@@ -24,6 +50,7 @@ export default function Gallery() {
   const [benchmark, setBenchmark] = useState({ status: 'idle', results: {} })
   const [collectionInput, setCollectionInput] = useState('')
   const [collectionState, setCollectionState] = useState({ status: 'idle', id: null, items: [] })
+  const [slideIndex, setSlideIndex] = useState(0)
   const [theme, setTheme] = useState(() => {
     const stored = window.localStorage.getItem(THEME_KEY)
     if (stored) return stored
@@ -111,52 +138,47 @@ export default function Gallery() {
     setBenchmark({ status: 'done', results: { image: imageTimings, video: videoTimings } })
   }
 
-  const loadCollection = async (e) => {
-    e.preventDefault()
-    const collectionId = collectionInput.trim()
-    if (!collectionId) return
-    setCollectionState({ status: 'loading', id: collectionId, items: [] })
+  const fetchCollection = useCallback(async (collectionId, { silent } = {}) => {
+    if (!silent) setCollectionState({ status: 'loading', id: collectionId, items: [] })
     try {
       const res = await fetch(collectionUrl(collectionId))
       if (!res.ok) throw new Error(`Request failed with ${res.status}`)
       const data = await res.json()
-      const items = (data.assetItemUrls || [])
-        .filter((item) => item.mimetype && (item.mimetype.startsWith('image/') || item.mimetype.startsWith('video/')))
-        .map((item) => ({
-          assetItemId: item.assetItemId,
-          name: item.assetItemName || item.assetItemId,
-          url: collectionMediaUrl(item.downloadUrl),
-          isVideo: item.mimetype.startsWith('video/'),
-        }))
-      setCollectionState({ status: items.length ? 'done' : 'empty', id: collectionId, items })
+      const items = collectionItemsFromData(data)
+      setCollectionState((prev) => {
+        // a newer load (different id) may have started while this was in flight
+        if (silent && prev.id !== collectionId) return prev
+        return { status: items.length ? 'done' : 'empty', id: collectionId, items }
+      })
     } catch (err) {
-      setCollectionState({ status: 'error', id: collectionId, items: [], error: err.message })
+      if (!silent) setCollectionState({ status: 'error', id: collectionId, items: [], error: err.message })
     }
+  }, [])
+
+  const loadCollection = (e) => {
+    e.preventDefault()
+    const collectionId = collectionInput.trim()
+    if (!collectionId) return
+    setSlideIndex(0)
+    fetchCollection(collectionId)
   }
 
-  const galleryTiles = useMemo(
-    () => [
-      ...filteredAssets.map((asset, index) => ({
-        key: `${asset.assetId}-${asset.targetPlatform}-${index}`,
-        assetId: asset.assetId,
-        targetPlatform: asset.targetPlatform,
-        isVideo: asset.isVideo,
-        url: assetUrl(asset),
-      })),
-      ...collectionState.items.map((item, index) => ({
-        key: `collection-${collectionState.id}-${item.assetItemId || index}`,
-        assetId: item.name,
-        targetPlatform: collectionState.id,
-        isVideo: item.isVideo,
-        url: item.url,
-      })),
-    ],
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [filteredAssets, collectionState]
-  )
+  // Poll the live collection so newly added asset items show up without a reload
+  const collectionStatus = collectionState.status
+  const collectionId = collectionState.id
+  useEffect(() => {
+    if (collectionStatus !== 'done' && collectionStatus !== 'empty') return
+    const timer = setInterval(() => fetchCollection(collectionId, { silent: true }), COLLECTION_POLL_MS)
+    return () => clearInterval(timer)
+  }, [collectionStatus, collectionId, fetchCollection])
 
-  const renderTile = (tile) => {
-    const { key, url } = tile
+  useEffect(() => {
+    setSlideIndex((i) => Math.min(i, Math.max(collectionState.items.length - 1, 0)))
+  }, [collectionState.items.length])
+
+  const renderTile = (asset, index) => {
+    const key = `${asset.assetId}-${asset.targetPlatform}-${index}`
+    const url = assetUrl(asset)
     const isLoaded = !!loadedKeys[key]
 
     return (
@@ -165,13 +187,13 @@ export default function Gallery() {
         className={styles.tile}
         onClick={(e) => {
           lastFocusedTileRef.current = e.currentTarget
-          setActiveAsset({ ...tile, url })
+          setActiveAsset({ ...asset, url })
         }}
-        aria-label={`Open ${tile.assetId}, ${tile.targetPlatform}`}
+        aria-label={`Open ${asset.assetId}, ${asset.targetPlatform}`}
       >
         <div className={styles.tileMedia}>
           {!isLoaded && <div className={styles.tileSkeleton} />}
-          {tile.isVideo ? (
+          {asset.isVideo ? (
             <video
               className={styles.media}
               muted
@@ -186,21 +208,21 @@ export default function Gallery() {
             <img
               className={styles.media}
               src={url}
-              alt={tile.assetId}
+              alt={asset.assetId}
               loading="lazy"
               onLoad={() => markLoaded(key)}
               style={{ opacity: isLoaded ? 1 : 0 }}
             />
           )}
-          {tile.isVideo && (
+          {asset.isVideo && (
             <span className={styles.playBadge}>
               <HugeiconsIcon icon={PlayIcon} size={14} />
             </span>
           )}
         </div>
         <div className={styles.tileMeta}>
-          <span className={styles.tileId}>{tile.assetId}</span>
-          <span className={styles.tileMetaPlatform}>{tile.targetPlatform}</span>
+          <span className={styles.tileId}>{asset.assetId}</span>
+          <span className={styles.tileMetaPlatform}>{asset.targetPlatform}</span>
         </div>
       </button>
     )
@@ -221,9 +243,128 @@ export default function Gallery() {
   const imageStats = statsFor('image')
   const videoStats = statsFor('video')
 
+  const activeSlide = collectionState.items[slideIndex]
+  const slideCount = collectionState.items.length
+
   return (
     <div className={styles.page}>
       <div className={styles.grain} aria-hidden="true" />
+
+      <section className={styles.collectionCard}>
+        <div className={styles.collectionHeader}>
+          <div>
+            <h2 className={styles.perfTitle}>Collection</h2>
+            <p className={styles.perfHint}>
+              {collectionState.status === 'idle'
+                ? 'Look up a live ADN collection. New items appear here automatically.'
+                : `${collectionState.id} · anchor asset first, updates live`}
+            </p>
+          </div>
+          <form className={styles.collectionForm} onSubmit={loadCollection}>
+            <input
+              type="text"
+              placeholder="Collection ID (e.g. iphone)"
+              aria-label="Collection ID"
+              className={styles.searchInput}
+              value={collectionInput}
+              onChange={(e) => setCollectionInput(e.target.value)}
+            />
+            <button
+              type="submit"
+              className={styles.perfRun}
+              disabled={!collectionInput.trim() || collectionState.status === 'loading'}
+            >
+              {collectionState.status === 'loading' ? 'Loading...' : 'Load'}
+            </button>
+          </form>
+        </div>
+
+        {collectionState.status === 'error' && (
+          <p className={styles.perfHint} role="alert">
+            Couldn't load "{collectionState.id}": {collectionState.error}
+          </p>
+        )}
+        {collectionState.status === 'empty' && (
+          <p className={styles.perfHint}>No image/video assets found in "{collectionState.id}".</p>
+        )}
+
+        {activeSlide && (
+          <div className={styles.collectionStage}>
+            <button
+              type="button"
+              className={styles.collectionArrow}
+              onClick={() => setSlideIndex((i) => (i - 1 + slideCount) % slideCount)}
+              disabled={slideCount < 2}
+              aria-label="Previous asset"
+            >
+              <HugeiconsIcon icon={ArrowLeft01Icon} size={18} />
+            </button>
+
+            <button
+              type="button"
+              className={styles.collectionMedia}
+              onClick={() =>
+                setActiveAsset({
+                  assetId: activeSlide.assetItemId,
+                  targetPlatform: collectionState.id,
+                  isVideo: activeSlide.isVideo,
+                  url: activeSlide.url,
+                })
+              }
+              aria-label={`Open ${activeSlide.assetItemId}`}
+            >
+              {activeSlide.isVideo ? (
+                <video
+                  key={activeSlide.url}
+                  className={styles.media}
+                  muted
+                  playsInline
+                  autoPlay
+                  loop
+                  preload="metadata"
+                >
+                  <source src={activeSlide.url} type="video/mp4" />
+                </video>
+              ) : (
+                <img className={styles.media} src={activeSlide.url} alt={activeSlide.assetItemId} />
+              )}
+              {slideIndex === 0 && <span className={styles.collectionAnchorBadge}>Anchor</span>}
+            </button>
+
+            <button
+              type="button"
+              className={styles.collectionArrow}
+              onClick={() => setSlideIndex((i) => (i + 1) % slideCount)}
+              disabled={slideCount < 2}
+              aria-label="Next asset"
+            >
+              <HugeiconsIcon icon={ArrowRight01Icon} size={18} />
+            </button>
+          </div>
+        )}
+
+        {slideCount > 1 && (
+          <div className={styles.collectionThumbs}>
+            {collectionState.items.map((item, index) => (
+              <button
+                key={item.assetItemId || index}
+                type="button"
+                className={`${styles.collectionThumb} ${index === slideIndex ? styles.collectionThumbActive : ''}`}
+                onClick={() => setSlideIndex(index)}
+                aria-label={`Show asset ${index + 1}`}
+              >
+                {item.isVideo ? (
+                  <video className={styles.media} muted playsInline preload="metadata">
+                    <source src={item.url} type="video/mp4" />
+                  </video>
+                ) : (
+                  <img className={styles.media} src={item.url} alt="" loading="lazy" />
+                )}
+              </button>
+            ))}
+          </div>
+        )}
+      </section>
 
       <header className={styles.header}>
         <div className={styles.headerTop}>
@@ -281,28 +422,8 @@ export default function Gallery() {
             ))}
           </div>
 
-          <form className={styles.searchWrap} onSubmit={loadCollection} style={{ maxWidth: 260 }}>
-            <HugeiconsIcon icon={Search01Icon} size={16} className={styles.searchIcon} />
-            <input
-              type="text"
-              placeholder="Load collection by ID"
-              aria-label="Collection ID"
-              className={styles.searchInput}
-              value={collectionInput}
-              onChange={(e) => setCollectionInput(e.target.value)}
-            />
-          </form>
-
-          <span className={styles.assetCount}>{galleryTiles.length} assets</span>
+          <span className={styles.assetCount}>{filteredAssets.length} assets</span>
         </div>
-        {collectionState.status === 'error' && (
-          <p className={styles.perfHint} role="alert">
-            Couldn't load "{collectionState.id}": {collectionState.error}
-          </p>
-        )}
-        {collectionState.status === 'empty' && (
-          <p className={styles.perfHint}>No image/video assets found in "{collectionState.id}".</p>
-        )}
       </header>
 
       <section className={styles.perfPanel}>
@@ -366,13 +487,13 @@ export default function Gallery() {
               Set REACT_APP_ADN_BASE_URL, REACT_APP_DOMAIN_ID and REACT_APP_ENV_ID to load assets.
             </p>
           </div>
-        ) : galleryTiles.length === 0 ? (
+        ) : filteredAssets.length === 0 ? (
           <div className={styles.emptyState}>
             <h2 className={styles.emptyTitle}>No matches</h2>
             <p className={styles.emptyBody}>Try a different search term or platform.</p>
           </div>
         ) : (
-          galleryTiles.map(renderTile)
+          filteredAssets.map(renderTile)
         )}
       </main>
 

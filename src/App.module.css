@@ -215,6 +215,122 @@
   border-color: var(--accent);
 }
 
+.collectionCard {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--bg-raised);
+  padding: 24px;
+  margin-bottom: 40px;
+  box-shadow: 0 10px 28px -20px var(--shadow-resting);
+}
+
+.collectionHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.collectionForm {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.collectionForm .searchInput {
+  width: 220px;
+  padding: 9px 16px;
+}
+
+.collectionStage {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.collectionArrow {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--ink);
+  cursor: pointer;
+  transition: border-color 200ms ease, opacity 200ms ease;
+}
+
+.collectionArrow:hover:not(:disabled) {
+  border-color: var(--line-strong);
+}
+
+.collectionArrow:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.collectionMedia {
+  position: relative;
+  flex: 1;
+  display: block;
+  height: 360px;
+  padding: 0;
+  border: none;
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  background: var(--bg);
+}
+
+.collectionAnchorBadge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+  background: var(--accent);
+  border-radius: 999px;
+  padding: 4px 10px;
+}
+
+.collectionThumbs {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.collectionThumb {
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  background: var(--bg);
+  opacity: 0.6;
+  transition: opacity 200ms ease, border-color 200ms ease;
+}
+
+.collectionThumb:hover {
+  opacity: 0.9;
+}
+
+.collectionThumbActive {
+  opacity: 1;
+  border-color: var(--accent);
+}
+
 .perfPanel {
   border: 1px solid var(--line);
   border-radius: 12px;
