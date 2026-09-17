@@ -23,19 +23,21 @@ const collectionUrl = (collectionId) =>
   `${ADN_API_ROOT}vc/${DOMAIN_ID}/${collectionId}/${ENV_ID}`
 const collectionMediaUrl = (downloadUrl) => `${ADN_API_ROOT}vi${downloadUrl}`
 const COLLECTION_POLL_MS = 8000
-const COLLECTION_ID = process.env.REACT_APP_COLLECTION_ID || 'iphone'
+const COLLECTION_ID = process.env.REACT_APP_COLLECTION_ID || 'DemoCol1'
 
-// Anchor asset first, then the rest of the collection in API order
+// Whichever asset the API currently marks as anchorAsset goes first;
+// re-derived on every fetch so a backend anchor change is picked up live.
 const collectionItemsFromData = (data) => {
   const isMedia = (item) =>
     item.mimetype && (item.mimetype.startsWith('image/') || item.mimetype.startsWith('video/'))
+  const anchorId = data.anchorAsset && data.anchorAsset.assetItemId
   const toItem = (item) => ({
     assetItemId: item.assetItemId,
     url: collectionMediaUrl(item.downloadUrl),
     isVideo: item.mimetype.startsWith('video/'),
+    isAnchor: item.assetItemId === anchorId,
   })
   const all = (data.assetItemUrls || []).filter(isMedia)
-  const anchorId = data.anchorAsset && data.anchorAsset.assetItemId
   const ordered = anchorId
     ? [...all.filter((i) => i.assetItemId === anchorId), ...all.filter((i) => i.assetItemId !== anchorId)]
     : all
@@ -275,7 +277,7 @@ export default function Gallery() {
           ) : (
             <img className={styles.collectionMediaFit} src={activeSlide.url} alt={activeSlide.assetItemId} />
           )}
-          {slideIndex === 0 && <span className={styles.collectionAnchorBadge}>Anchor</span>}
+          {activeSlide.isAnchor && <span className={styles.collectionAnchorBadge}>Anchor</span>}
         </button>
 
         {slideCount > 1 && (
